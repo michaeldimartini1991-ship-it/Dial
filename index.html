@@ -435,12 +435,12 @@ input[type=range]::-moz-range-thumb{border-color:var(--dialc)}
     <div class="group">
       <div class="grouphead"><h3>About you</h3></div>
       <div class="ifields">
-        <div class="field"><label for="cashNow">NIL money you have now</label><input type="text" id="cashNow" inputmode="decimal" autocomplete="off"></div>
-        <div class="field"><label for="spend">Monthly costs NIL covers</label><input type="text" id="spend" inputmode="decimal" autocomplete="off"><div class="hint">Rent, food, phone, travel</div></div>
+        <div class="field"><label for="cashNow">NIL money you have now</label><input type="text" id="cashNow" inputmode="decimal" autocomplete="off" placeholder="$0"></div>
+        <div class="field"><label for="spend">Monthly costs NIL covers</label><input type="text" id="spend" inputmode="decimal" autocomplete="off" placeholder="$0"><div class="hint">Rent, food, phone, travel</div></div>
         <div class="field"><label for="elig">Years of eligibility left</label><select id="elig"><option value="0">Final season</option><option value="1">1 year</option><option value="2">2 years</option><option value="3">3 years</option><option value="4">4 or more</option></select></div>
         <div class="field"><label for="pro">Chance of a pro career</label><select id="pro"><option value="0">Not planning on it</option><option value="0.1">Long shot</option><option value="0.35">Real chance</option><option value="0.7">Likely</option></select></div>
         <div class="field"><label for="taxRate">Tax set-aside rate</label><input type="text" id="taxRate" inputmode="decimal" autocomplete="off"><div class="hint">Percent of this year's income</div></div>
-        <div class="field"><label for="taxPaid">Taxes already paid this year</label><input type="text" id="taxPaid" inputmode="decimal" autocomplete="off"><div class="hint">Estimated payments sent in</div></div>
+        <div class="field"><label for="taxPaid">Taxes already paid this year</label><input type="text" id="taxPaid" inputmode="decimal" autocomplete="off" placeholder="$0"><div class="hint">Estimated payments sent in</div></div>
       </div>
     </div>
 
@@ -823,9 +823,10 @@ let rowSeq = 0;
 const withIds = list => list.map(p=>({id:++rowSeq, date:p.date, amount:p.amount, src:p.src||''}));
 const blankPay = () => ({id:++rowSeq, date:'', amount:0, src:''});   /* one open row for the athlete to fill in */
 const state = {dial:70, amount:10000, years:10, monthly:0, mode:'funds', step:1, current:{}, newCash:0,
-  payments:[blankPay()], cashNow:20000, spend:800, elig:2, pro:0.1, taxRate:0.25, taxPaid:0, applyAdj:true};
+  payments:[blankPay()], cashNow:0, spend:0, elig:2, pro:0.1, taxRate:0.25, taxPaid:0, applyAdj:true};
 try{ const s = JSON.parse(localStorage.getItem(KEY)||'null'); if(s){ ['dial','amount','years','monthly'].forEach(k=>{ if(typeof s[k]==='number' && isFinite(s[k])) state[k]=s[k]; }); if(s.mode==='stocks') state.mode='stocks';
   ['cashNow','spend','elig','pro','taxRate','taxPaid'].forEach(k=>{ if(typeof s[k]==='number' && isFinite(s[k])) state[k]=s[k]; });
+  if(state.cashNow===20000 && state.spend===800){ state.cashNow = 0; state.spend = 0; }   /* drop the old made-up starting numbers */
   if(typeof s.applyAdj==='boolean') state.applyAdj=s.applyAdj;
   if(Array.isArray(s.payments) && !s.isSample){ const saved = withIds(s.payments.filter(p=>p&&typeof p.date==='string')); if(saved.length) state.payments = saved; } } }catch(e){}   /* saved sample data from older versions is dropped */
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify({dial:state.dial,amount:state.amount,years:state.years,monthly:state.monthly,mode:state.mode,cashNow:state.cashNow,spend:state.spend,elig:state.elig,pro:state.pro,taxRate:state.taxRate,taxPaid:state.taxPaid,applyAdj:state.applyAdj,payments:state.payments.map(p=>({date:p.date,amount:p.amount,src:p.src}))})); }catch(e){} }
@@ -1201,9 +1202,10 @@ function renderIncome(){
 }
 function bindIncomeField(id,key,lo,hi,asPct){
   const el = $(id);
-  el.value = asPct ? String(Math.round(state[key]*100)) : nf0.format(state[key]);
+  const show = () => { el.value = asPct ? String(Math.round(state[key]*100)) : (state[key] ? nf0.format(state[key]) : ''); };   /* zero shows as an empty box */
+  show();
   el.addEventListener('input',()=>{ const v = clamp(parseNum(el.value),lo,hi); state[key] = asPct ? v/100 : v; renderIncome(); renderHero(); save(); });
-  el.addEventListener('blur',()=>{ el.value = asPct ? String(Math.round(state[key]*100)) : nf0.format(state[key]); });
+  el.addEventListener('blur', show);
 }
 function initIncome(){
   renderPayRows();

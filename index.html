@@ -510,7 +510,7 @@ input[type=range]::-moz-range-thumb{border-color:var(--dialc)}
           <div class="field"><label for="years">Years to leave it</label><input type="text" id="years" inputmode="numeric" autocomplete="off"><div class="err" id="eYears"></div></div>
           <div class="field f3"><label for="monthly">Add each month</label><input type="text" id="monthly" inputmode="decimal" autocomplete="off"><div class="hint">Optional</div><div class="err" id="eMonthly"></div></div>
         </div>
-        <div class="adj"><label><input type="checkbox" id="applyAdj" checked> Keep my dial within the range my income supports</label> <button class="btn ghost" id="useRec" style="padding:7px 16px;font-size:14px;margin-left:8px"></button></div>
+        <div class="adj"><label><input type="checkbox" id="applyAdj" checked> Show the range my income supports on the dial</label> <button class="btn ghost" id="useRec" style="padding:7px 16px;font-size:14px;margin-left:8px"></button></div>
         <div class="note" id="note1" hidden></div>
       </div>
       <div class="waveBox">
@@ -855,7 +855,7 @@ function model(){
   const years = clamp(Math.round(state.years),1,40);
   const monthly = clamp(state.monthly,0,1e6);
   INC = incomeRisk(state.payments, TODAY, state.elig, state.pro);
-  const dial = state.applyAdj ? adjustedDial(state.dial, INC.score) : state.dial;
+  const dial = state.dial;   /* the athlete's own choice is always used; the income range is guidance, not a cap */
   const pcts = toPercents(interpWeights(dial));
   return {dial,amount,years,monthly,pcts,st:portfolioStats(pcts),dollars:allocateDollars(amount,pcts),band:bandFor(dial),tier:tierOf(dial)};
 }
@@ -909,8 +909,8 @@ function renderHero(){
   const {band,st,amount} = M, g = Math.round(st.growth*100);
   $('#bandName').textContent = band.name; $('#bandText').textContent = band.text;
   const rg = dialRange(INC.score);
-  $('#adjLine').innerHTML = (state.applyAdj && state.dial>rg.hi) ? 'Your income range caps this dial at <b>'+rg.hi+'</b>. The portfolio below uses '+rg.hi+'.' : '';
-  $('#useRec').textContent = 'Set dial to '+rg.rec; $('#useRec').hidden = !state.applyAdj || state.dial===rg.rec;
+  $('#adjLine').innerHTML = state.dial>rg.hi ? '<span class="flag">This is above the range your income supports (<b>'+rg.lo+'\u2013'+rg.hi+'</b>).</span> You can go higher. Just know that a bad year in the market could land at the same time as a dry spell in NIL money.' : '';
+  $('#useRec').textContent = 'Set dial to '+rg.rec; $('#useRec').hidden = state.dial===rg.rec;
   $('#fMix').innerHTML = '<b>'+g+'%</b> stocks and real estate, <b>'+(100-g)+'%</b> bonds and cash';
   $('#fAvg').innerHTML = '<b>'+spct(st.mu)+'</b> a year, about '+sUsd(amount*st.mu)+' on '+usd(amount);
   if(st.bad>=0) $('#fBad').innerHTML = 'Should still end near <b>'+spct(st.bad)+'</b>, or '+usd(amount*(1+st.bad));
@@ -1196,12 +1196,12 @@ function renderIncome(){
   const cash = state.cashNow, taxHold = Math.min(cash, Math.round(tax.owed)), cushHold = Math.min(cash-taxHold, cushion), invest = Math.max(0, cash-taxHold-cushHold);
   PLAN = {invest};
   let fl = '<p class="muted" style="max-width:62ch">Of the '+usd(cash)+' you have now:</p>';
-  const segs = [['Taxes',taxHold,'var(--tax)','var(--on-fill)'],['Cushion',cushHold,'var(--cush)','var(--on-fill)'],['Invest',invest,hsl(adjustedDial(state.dial,I.score)),'var(--paper)']].filter(x=>x[1]>0);
+  const segs = [['Taxes',taxHold,'var(--tax)','var(--on-fill)'],['Cushion',cushHold,'var(--cush)','var(--on-fill)'],['Invest',invest,hsl(state.dial),'var(--paper)']].filter(x=>x[1]>0);
   if(cash>0) fl += '<div class="flow" role="img" aria-label="'+segs.map(x=>x[0]+' '+usd(x[1])).join(', ')+'">'+segs.map(x=>'<div title="'+x[0]+' '+usd(x[1])+'" style="flex:'+x[1]+';background:'+x[2]+';color:'+x[3]+'">'+(x[1]/cash>=.12?x[0]:'')+'</div>').join('')+'</div>';
   fl += '<div class="facts" style="margin-top:8px">'+
     '<div class="fact"><div class="k">Set aside for taxes</div><div class="v"><b>'+usd(taxHold)+'</b> &nbsp;'+pct(state.taxRate,0)+' of the '+usd(tax.ytd)+' received this year'+(state.taxPaid>0?', minus '+usd(state.taxPaid)+' already paid':'')+'. Keep it in savings until you file.</div></div>'+
     '<div class="fact"><div class="k">Cash cushion</div><div class="v"><b>'+usd(cushHold)+'</b> &nbsp;'+months.toFixed(1)+' months of your '+usd(state.spend)+' monthly costs'+(cushHold<cushion?', short of the '+usd(cushion)+' target':'')+'. Riskier income means a bigger cushion.</div></div>'+
-    '<div class="fact"><div class="k">Ready to invest</div><div class="v"><b>'+usd(invest)+'</b> &nbsp;'+(invest>0?'Invested at dial '+adjustedDial(state.dial,I.score)+(adjustedDial(state.dial,I.score)<state.dial?', capped from your '+state.dial:'')+'.':'Build the tax set-aside and cushion first, then invest what comes in after.')+'</div></div></div>';
+    '<div class="fact"><div class="k">Ready to invest</div><div class="v"><b>'+usd(invest)+'</b> &nbsp;'+(invest>0?'Invested at dial '+state.dial+(state.dial>dialRange(I.score).hi?', above your income range.':'.'):'Build the tax set-aside and cushion first, then invest what comes in after.')+'</div></div></div>';
   $('#flowOut').innerHTML = fl;
   $('#toDial').textContent = invest>=100 ? 'Invest '+usd(invest)+' →' : 'Go to the dial →';
 

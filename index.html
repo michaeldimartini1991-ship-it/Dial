@@ -424,7 +424,6 @@ input[type=range]::-moz-range-thumb{border-color:var(--dialc)}
   <section class="step" id="s1" aria-labelledby="h0">
     <h1 id="h0" tabindex="-1">How steady is your NIL money?</h1>
     <p class="lede">NIL pays in chunks, not paychecks. List your payments and we measure how risky your income is, set aside money for taxes and a cash cushion, and recommend a risk dial range to match.</p>
-    <p class="note" id="sampleNote">These are sample payments for a made-up athlete. Replace them with your own.</p>
 
     <div class="group">
       <div class="grouphead"><h3>Your payments</h3><span class="tot">Past dates count as received, future dates as signed</span></div>
@@ -819,25 +818,16 @@ const $$ = s => Array.from(document.querySelectorAll(s));
 const KEY = 'riskdial.v3';
 const TODAY = (()=>{ const d=new Date(); return Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()); })();
 const isoOff = days => new Date(TODAY+days*86400000).toISOString().slice(0,10);
-const SAMPLE = [
-  {date:isoOff(-395),amount:4000,src:'School collective'},
-  {date:isoOff(-335),amount:1500,src:'Local car dealership'},
-  {date:isoOff(-255),amount:8000,src:'School collective'},
-  {date:isoOff(-210),amount:750,src:'Sponsored social posts'},
-  {date:isoOff(-120),amount:2500,src:'Sports drink brand'},
-  {date:isoOff(-45),amount:10000,src:'School collective'},
-  {date:isoOff(40),amount:5000,src:'School collective'},
-  {date:isoOff(100),amount:5000,src:'School collective'}
-];
 let rowSeq = 0;
 const withIds = list => list.map(p=>({id:++rowSeq, date:p.date, amount:p.amount, src:p.src||''}));
+const blankPay = () => ({id:++rowSeq, date:'', amount:0, src:''});   /* one open row for the athlete to fill in */
 const state = {dial:70, amount:10000, years:10, monthly:0, mode:'funds', step:1, current:{}, newCash:0,
-  payments:withIds(SAMPLE), isSample:true, cashNow:20000, spend:800, elig:2, pro:0.1, taxRate:0.25, taxPaid:0, applyAdj:true};
+  payments:[blankPay()], cashNow:20000, spend:800, elig:2, pro:0.1, taxRate:0.25, taxPaid:0, applyAdj:true};
 try{ const s = JSON.parse(localStorage.getItem(KEY)||'null'); if(s){ ['dial','amount','years','monthly'].forEach(k=>{ if(typeof s[k]==='number' && isFinite(s[k])) state[k]=s[k]; }); if(s.mode==='stocks') state.mode='stocks';
   ['cashNow','spend','elig','pro','taxRate','taxPaid'].forEach(k=>{ if(typeof s[k]==='number' && isFinite(s[k])) state[k]=s[k]; });
   if(typeof s.applyAdj==='boolean') state.applyAdj=s.applyAdj;
-  if(Array.isArray(s.payments)){ state.payments = withIds(s.payments.filter(p=>p&&typeof p.date==='string')); state.isSample = !!s.isSample; } } }catch(e){}
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify({dial:state.dial,amount:state.amount,years:state.years,monthly:state.monthly,mode:state.mode,cashNow:state.cashNow,spend:state.spend,elig:state.elig,pro:state.pro,taxRate:state.taxRate,taxPaid:state.taxPaid,applyAdj:state.applyAdj,isSample:state.isSample,payments:state.payments.map(p=>({date:p.date,amount:p.amount,src:p.src}))})); }catch(e){} }
+  if(Array.isArray(s.payments) && !s.isSample){ const saved = withIds(s.payments.filter(p=>p&&typeof p.date==='string')); if(saved.length) state.payments = saved; } } }catch(e){}   /* saved sample data from older versions is dropped */
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify({dial:state.dial,amount:state.amount,years:state.years,monthly:state.monthly,mode:state.mode,cashNow:state.cashNow,spend:state.spend,elig:state.elig,pro:state.pro,taxRate:state.taxRate,taxPaid:state.taxPaid,applyAdj:state.applyAdj,payments:state.payments.map(p=>({date:p.date,amount:p.amount,src:p.src}))})); }catch(e){} }
 
 const nf0 = new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
 const usd = n => (n<0?'\u2212$':'$') + nf0.format(Math.abs(Math.round(n)));
@@ -1150,7 +1140,6 @@ let PLAN = null, WHY_OPEN = false;
 function renderIncome(){
   M = model();
   const I = INC, w = INCOME_WEIGHTS, f = I.f;
-  $('#sampleNote').hidden = !state.isSample;
   $$('#payRows tr[data-id]').forEach(tr=>{ const p = state.payments.find(x=>x.id===+tr.dataset.id); if(p) tr.querySelector('.st').innerHTML = payStatus(p); });
   const ey = state.elig, proLbl = $('#pro').selectedOptions[0] ? $('#pro').selectedOptions[0].textContent : '';
   const rows = [
@@ -1229,12 +1218,12 @@ function initIncome(){
     const tr = e.target.closest('tr[data-id]'); if(!tr) return;
     const p = state.payments.find(x=>x.id===+tr.dataset.id); if(!p) return;
     const k = e.target.dataset.k; p[k] = k==='amount' ? parseNum(e.target.value) : e.target.value;
-    state.isSample = false; state.current = {}; renderIncome(); renderHero(); save();
+    state.current = {}; renderIncome(); renderHero(); save();
   });
   tb.addEventListener('focusout',e=>{ if(e.target.dataset.k==='amount'){ const v = parseNum(e.target.value); e.target.value = v?nf0.format(v):''; } });
-  tb.addEventListener('click',e=>{ const b = e.target.closest('[data-del]'); if(!b) return; state.payments = state.payments.filter(x=>x.id!==+b.dataset.del); state.isSample=false; renderPayRows(); renderIncome(); renderHero(); save(); });
-  $('#addPay').addEventListener('click',()=>{ const p = {id:++rowSeq,date:isoOff(0),amount:0,src:''}; state.payments.push(p); state.isSample=false; renderPayRows(); renderIncome(); save(); const el = $('#pa-'+p.id); if(el) el.focus(); });
-  $('#clearPay').addEventListener('click',()=>{ state.payments = []; state.isSample=false; renderPayRows(); renderIncome(); renderHero(); save(); });
+  tb.addEventListener('click',e=>{ const b = e.target.closest('[data-del]'); if(!b) return; state.payments = state.payments.filter(x=>x.id!==+b.dataset.del); if(!state.payments.length) state.payments = [blankPay()]; renderPayRows(); renderIncome(); renderHero(); save(); });
+  $('#addPay').addEventListener('click',()=>{ const p = {id:++rowSeq,date:isoOff(0),amount:0,src:''}; state.payments.push(p); renderPayRows(); renderIncome(); save(); const el = $('#pa-'+p.id); if(el) el.focus(); });
+  $('#clearPay').addEventListener('click',()=>{ state.payments = [blankPay()]; renderPayRows(); renderIncome(); renderHero(); save(); });
   $('#toDial').addEventListener('click',()=>{ if(PLAN && PLAN.invest>=100){ state.amount = PLAN.invest; $('#amount').value = nf0.format(PLAN.invest); $('#eAmount').textContent=''; state.current = {}; } M = model(); renderHero(); renderMini(); save(); setStep(2); });
   $('#rangeOut').addEventListener('click',e=>{ if(e.target.id==='setRec'){ setDial(dialRange(INC.score).rec); if(PLAN && PLAN.invest>=100){ state.amount = PLAN.invest; $('#amount').value = nf0.format(PLAN.invest); } M = model(); renderHero(); save(); setStep(2); } });
   $('#dialRange').addEventListener('click',e=>{ const c = e.target.closest('[data-set]'); if(c){ setDial(+c.dataset.set); return; } if(e.target.closest('[data-go-income]')) setStep(1); });

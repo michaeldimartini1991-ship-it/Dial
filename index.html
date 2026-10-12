@@ -439,7 +439,8 @@ input[type=range]::-moz-range-thumb{border-color:var(--dialc)}
         <div class="field"><label for="spend">Monthly costs NIL covers</label><input type="text" id="spend" inputmode="decimal" autocomplete="off" placeholder="$0"><div class="hint">Rent, food, phone, travel</div></div>
         <div class="field"><label for="elig">Years of eligibility left</label><select id="elig"><option value="0">Final season</option><option value="1">1 year</option><option value="2">2 years</option><option value="3">3 years</option><option value="4">4 or more</option></select></div>
         <div class="field"><label for="pro">Chance of a pro career</label><select id="pro"><option value="0">Not planning on it</option><option value="0.1">Long shot</option><option value="0.35">Real chance</option><option value="0.7">Likely</option></select></div>
-        <div class="field"><label for="taxRate">Tax set-aside rate</label><input type="text" id="taxRate" inputmode="decimal" autocomplete="off"><div class="hint">Percent of this year's income</div></div>
+        <div class="field"><label for="home">State you live in</label><select id="home"></select><div class="hint" id="homeHint"></div></div>
+        <div class="field"><label for="taxRate">Federal tax set-aside</label><input type="text" id="taxRate" inputmode="decimal" autocomplete="off"><div class="hint">Percent for federal income and self-employment tax</div></div>
         <div class="field"><label for="taxPaid">Taxes already paid this year</label><input type="text" id="taxPaid" inputmode="decimal" autocomplete="off" placeholder="$0"><div class="hint">Estimated payments sent in</div></div>
       </div>
     </div>
@@ -708,10 +709,40 @@ function incomeRisk(payments, today, eligYears, proOdds){
 function cushionMonths(score){ return CUSHION_MIN + (CUSHION_MAX-CUSHION_MIN)*score/100; }
 function dialRange(score){ const hi = Math.round(100 - RANGE_TOP_CUT*score), lo = Math.max(0, hi - RANGE_WIDTH); return {lo, hi, rec:Math.round((lo+hi)/2)}; }
 function adjustedDial(dial, score){ return Math.min(dial, dialRange(score).hi); }
-function taxReserve(payments, today, rate, paid){
+/* State income tax brackets for single filers, 2026 (Tax Foundation, as of Jan 1, 2026). Each pair is [income above, rate]. Empty = no wage income tax. */
+const STATE_TAX = {
+  AL:['Alabama',[[0,.02],[500,.04],[3000,.05]]], AK:['Alaska',[]], AZ:['Arizona',[[0,.025]]], AR:['Arkansas',[[0,.02],[4600,.039]]],
+  CA:['California',[[0,.01],[11079,.02],[26264,.04],[41452,.06],[57542,.08],[72724,.093],[371479,.103],[445771,.113],[742953,.123],[1000000,.133]]],
+  CO:['Colorado',[[0,.044]]], CT:['Connecticut',[[0,.02],[10000,.045],[50000,.055],[100000,.06],[200000,.065],[250000,.069],[500000,.0699]]],
+  DE:['Delaware',[[2000,.022],[5000,.039],[10000,.048],[20000,.052],[25000,.0555],[60000,.066]]], DC:['District of Columbia',[[0,.04],[10000,.06],[40000,.065],[60000,.085],[250000,.0925],[500000,.0975],[1000000,.1075]]],
+  FL:['Florida',[]], GA:['Georgia',[[0,.0519]]],
+  HI:['Hawaii',[[0,.014],[9600,.032],[14400,.055],[19200,.064],[24000,.068],[36000,.072],[48000,.076],[125000,.079],[175000,.0825],[225000,.09],[275000,.10],[325000,.11]]],
+  ID:['Idaho',[[4811,.053]]], IL:['Illinois',[[0,.0495]]], IN:['Indiana',[[0,.0295]]], IA:['Iowa',[[0,.038]]], KS:['Kansas',[[0,.052],[23000,.0558]]],
+  KY:['Kentucky',[[0,.035]]], LA:['Louisiana',[[0,.03]]], ME:['Maine',[[0,.058],[27399,.0675],[64849,.0715]]],
+  MD:['Maryland',[[0,.02],[1000,.03],[2000,.04],[3000,.0475],[100000,.05],[125000,.0525],[150000,.055],[250000,.0575],[500000,.0625],[1000000,.065]]],
+  MA:['Massachusetts',[[0,.05],[1083150,.09]]], MI:['Michigan',[[0,.0425]]], MN:['Minnesota',[[0,.0535],[33310,.068],[109430,.0785],[203150,.0985]]],
+  MS:['Mississippi',[[10000,.04]]], MO:['Missouri',[[1348,.02],[2696,.025],[4044,.03],[5392,.035],[6740,.04],[8088,.045],[9436,.047]]],
+  MT:['Montana',[[0,.047],[47500,.0565]]], NE:['Nebraska',[[0,.0246],[4130,.0351],[24760,.0455]]], NV:['Nevada',[]], NH:['New Hampshire',[]],
+  NJ:['New Jersey',[[0,.014],[20000,.0175],[35000,.035],[40000,.0553],[75000,.0637],[500000,.0897],[1000000,.1075]]],
+  NM:['New Mexico',[[0,.015],[5500,.032],[16500,.043],[33500,.047],[66500,.049],[210000,.059]]],
+  NY:['New York',[[0,.039],[8500,.044],[11700,.0515],[13900,.054],[80650,.059],[215400,.0685],[1077550,.0965],[5000000,.103],[25000000,.109]]],
+  NC:['North Carolina',[[0,.0399]]], ND:['North Dakota',[[48475,.0195],[244825,.025]]], OH:['Ohio',[[26050,.0275]]],
+  OK:['Oklahoma',[[3750,.025],[4900,.035],[7200,.045]]], OR:['Oregon',[[0,.0475],[4550,.0675],[11400,.0875],[125000,.099]]],
+  PA:['Pennsylvania',[[0,.0307]]], RI:['Rhode Island',[[0,.0375],[82050,.0475],[186450,.0599]]], SC:['South Carolina',[[3640,.03],[18230,.06]]],
+  SD:['South Dakota',[]], TN:['Tennessee',[]], TX:['Texas',[]], UT:['Utah',[[0,.045]]], VT:['Vermont',[[0,.0335],[49400,.066],[119700,.076],[249700,.0875]]],
+  VA:['Virginia',[[0,.02],[3000,.03],[5000,.05],[17000,.0575]]], WA:['Washington',[]],
+  WV:['West Virginia',[[0,.0222],[10000,.0296],[25000,.0333],[40000,.0444],[60000,.0482]]], WI:['Wisconsin',[[0,.035],[15110,.044],[51950,.053],[332720,.0765]]], WY:['Wyoming',[]]
+};
+function stateTax(code, income){
+  const b = (STATE_TAX[code]||[0,[]])[1]; let t = 0;
+  for(let i=0;i<b.length;i++){ const lo = b[i][0], hi = i+1<b.length ? b[i+1][0] : Infinity; if(income>lo) t += (Math.min(income,hi)-lo)*b[i][1]; }
+  return t;
+}
+function taxReserve(payments, today, rate, paid, home){
   const y = new Date(today).getUTCFullYear(), start = Date.UTC(y,0,1);
   const ytd = payments.map(p=>({t:parseISO(p.date), a:+p.amount||0})).filter(p=>p.t!==null && p.t>=start && p.t<=today).reduce((s,p)=>s+p.a,0);
-  return {ytd, owed:Math.max(0, ytd*rate - paid)};
+  const fed = ytd*rate, st = stateTax(home, ytd);
+  return {ytd, fed, st, owed:Math.max(0, fed + st - paid)};
 }
 function hueFor(x){ x = Math.max(0,Math.min(100,x)); return Math.round(x<=50 ? 172+(40-172)*x/50 : 40+(6-40)*(x-50)/50); }
 const hsl = (x,soft) => 'hsl('+hueFor(x)+' var(--hs) var('+(soft?'--hl-soft':'--hl')+'))';
@@ -823,13 +854,14 @@ let rowSeq = 0;
 const withIds = list => list.map(p=>({id:++rowSeq, date:p.date, amount:p.amount, src:p.src||''}));
 const blankPay = () => ({id:++rowSeq, date:'', amount:0, src:''});   /* one open row for the athlete to fill in */
 const state = {dial:70, amount:10000, years:10, monthly:0, mode:'funds', step:1, current:{}, newCash:0,
-  payments:[blankPay()], cashNow:0, spend:0, elig:2, pro:0.1, taxRate:0.25, taxPaid:0, applyAdj:true};
+  payments:[blankPay()], cashNow:0, spend:0, elig:2, pro:0.1, taxRate:0.25, taxPaid:0, home:'', applyAdj:true};
 try{ const s = JSON.parse(localStorage.getItem(KEY)||'null'); if(s){ ['dial','amount','years','monthly'].forEach(k=>{ if(typeof s[k]==='number' && isFinite(s[k])) state[k]=s[k]; }); if(s.mode==='stocks') state.mode='stocks';
   ['cashNow','spend','elig','pro','taxRate','taxPaid'].forEach(k=>{ if(typeof s[k]==='number' && isFinite(s[k])) state[k]=s[k]; });
   if(state.cashNow===20000 && state.spend===800){ state.cashNow = 0; state.spend = 0; }   /* drop the old made-up starting numbers */
   if(typeof s.applyAdj==='boolean') state.applyAdj=s.applyAdj;
+  if(typeof s.home==='string' && STATE_TAX[s.home]) state.home=s.home;
   if(Array.isArray(s.payments) && !s.isSample){ const saved = withIds(s.payments.filter(p=>p&&typeof p.date==='string')); if(saved.length) state.payments = saved; } } }catch(e){}   /* saved sample data from older versions is dropped */
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify({dial:state.dial,amount:state.amount,years:state.years,monthly:state.monthly,mode:state.mode,cashNow:state.cashNow,spend:state.spend,elig:state.elig,pro:state.pro,taxRate:state.taxRate,taxPaid:state.taxPaid,applyAdj:state.applyAdj,payments:state.payments.map(p=>({date:p.date,amount:p.amount,src:p.src}))})); }catch(e){} }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify({dial:state.dial,amount:state.amount,years:state.years,monthly:state.monthly,mode:state.mode,cashNow:state.cashNow,spend:state.spend,elig:state.elig,pro:state.pro,taxRate:state.taxRate,taxPaid:state.taxPaid,home:state.home,applyAdj:state.applyAdj,payments:state.payments.map(p=>({date:p.date,amount:p.amount,src:p.src}))})); }catch(e){} }
 
 const nf0 = new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
 const usd = n => (n<0?'\u2212$':'$') + nf0.format(Math.abs(Math.round(n)));
@@ -1134,6 +1166,13 @@ function rangeScale(rg){
     '<div class="you" style="left:'+state.dial+'%">\u25B2 your dial '+state.dial+'</div></div>'+
     '<div class="rticks"><span style="left:0">0</span><span style="left:25%">25</span><span style="left:50%">50</span><span style="left:75%">75</span><span style="left:100%">100</span></div>';
 }
+function renderHomeHint(tax){
+  const h = $('#homeHint'); if(!h) return;
+  if(!state.home){ h.textContent = 'Adds your state income tax'; return; }
+  const b = STATE_TAX[state.home][1];
+  if(!b.length){ h.textContent = 'No state income tax'; return; }
+  h.textContent = tax.ytd>0 ? 'About '+(tax.st/tax.ytd*100).toFixed(1)+'% on this year\'s NIL income' : (b.length===1 && b[0][0]===0 ? 'Flat '+(b[0][1]*100).toFixed(2).replace(/\.?0+$/,'')+'% state income tax' : 'Rate depends on how much you earn');
+}
 function renderDialRange(){
   const rg = dialRange(INC.score), opt = (k,d) => '<button data-set="'+d+'" aria-pressed="'+(state.dial===d)+'">'+k+' <b style="color:'+(state.dial===d?'inherit':hsl(d))+'">'+d+'</b></button>';
   $('#dialRange').innerHTML = '<div class="seg rseg" role="group" aria-label="Recommended dial for your income">'+opt('Most careful',rg.lo)+opt('Suggested',rg.rec)+opt('Most to take',rg.hi)+'</div>';
@@ -1179,10 +1218,11 @@ function renderIncome(){
   let rh = '<p class="lab-sm" style="margin-top:40px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Your range on the risk dial</p>';
   rh += rangeScale(rg);
   rh += '<div class="rcards">'+card('Most careful',rg.lo)+card('Suggested',rg.rec,'mid')+card('Most you should take',rg.hi)+'</div>';
-  rh += '<div class="row2" style="margin-top:22px"><button class="btn" id="setRec">Use dial '+rg.rec+'</button><span class="small muted" style="max-width:46ch">'+(state.dial>rg.hi?'Your current dial of '+state.dial+' is above this range. The portfolio will use '+rg.hi+' unless you turn the range off on the Dial step.':state.dial<rg.lo?'Your current dial of '+state.dial+' is below the range. That is more careful than you need to be, which is fine.':'Your current dial of '+state.dial+' is inside the range.')+'</span></div>';
+  rh += '<div class="row2" style="margin-top:22px"><button class="btn" id="setRec">Use dial '+rg.rec+'</button><span class="small muted" style="max-width:46ch">'+(state.dial>rg.hi?'Your current dial of '+state.dial+' is above this range. That is your call; just know it adds risk on top of uncertain income.':state.dial<rg.lo?'Your current dial of '+state.dial+' is below the range. That is more careful than you need to be, which is fine.':'Your current dial of '+state.dial+' is inside the range.')+'</span></div>';
   $('#rangeOut').innerHTML = rh;
 
-  const tax = taxReserve(state.payments, TODAY, state.taxRate, state.taxPaid);
+  const tax = taxReserve(state.payments, TODAY, state.taxRate, state.taxPaid, state.home);
+  renderHomeHint(tax);
   const months = cushionMonths(I.score), cushion = Math.round(months*state.spend);
   const cash = state.cashNow, taxHold = Math.min(cash, Math.round(tax.owed)), cushHold = Math.min(cash-taxHold, cushion), invest = Math.max(0, cash-taxHold-cushHold);
   PLAN = {invest};
@@ -1190,7 +1230,7 @@ function renderIncome(){
   const segs = [['Taxes',taxHold,'var(--tax)','var(--on-fill)'],['Cushion',cushHold,'var(--cush)','var(--on-fill)'],['Invest',invest,hsl(state.dial),'var(--paper)']].filter(x=>x[1]>0);
   if(cash>0) fl += '<div class="flow" role="img" aria-label="'+segs.map(x=>x[0]+' '+usd(x[1])).join(', ')+'">'+segs.map(x=>'<div title="'+x[0]+' '+usd(x[1])+'" style="flex:'+x[1]+';background:'+x[2]+';color:'+x[3]+'">'+(x[1]/cash>=.12?x[0]:'')+'</div>').join('')+'</div>';
   fl += '<div class="facts" style="margin-top:8px">'+
-    '<div class="fact"><div class="k">Set aside for taxes</div><div class="v"><b>'+usd(taxHold)+'</b> &nbsp;'+pct(state.taxRate,0)+' of the '+usd(tax.ytd)+' received this year'+(state.taxPaid>0?', minus '+usd(state.taxPaid)+' already paid':'')+'. Keep it in savings until you file.</div></div>'+
+    '<div class="fact"><div class="k">Set aside for taxes</div><div class="v"><b>'+usd(taxHold)+'</b> &nbsp;On the '+usd(tax.ytd)+' received this year: '+usd(tax.fed)+' federal ('+pct(state.taxRate,0)+')'+(state.home ? (tax.st>0 ? ' plus '+usd(tax.st)+' '+STATE_TAX[state.home][0]+' income tax' : ', and '+STATE_TAX[state.home][0]+' has no state income tax') : ', plus state tax once you pick your state')+(state.taxPaid>0?', minus '+usd(state.taxPaid)+' already paid':'')+'. Keep it in savings until you file.</div></div>'+
     '<div class="fact"><div class="k">Cash cushion</div><div class="v"><b>'+usd(cushHold)+'</b> &nbsp;'+months.toFixed(1)+' months of your '+usd(state.spend)+' monthly costs'+(cushHold<cushion?', short of the '+usd(cushion)+' target':'')+'. Riskier income means a bigger cushion.</div></div>'+
     '<div class="fact"><div class="k">Ready to invest</div><div class="v"><b>'+usd(invest)+'</b> &nbsp;'+(invest>0?'Invested at dial '+state.dial+(state.dial>dialRange(I.score).hi?', above your income range.':'.'):'Build the tax set-aside and cushion first, then invest what comes in after.')+'</div></div></div>';
   $('#flowOut').innerHTML = fl;
@@ -1213,6 +1253,8 @@ function initIncome(){
   bindIncomeField('#spend','spend',0,1e6);
   bindIncomeField('#taxRate','taxRate',0,60,true);
   bindIncomeField('#taxPaid','taxPaid',0,1e9);
+  const hs = $('#home'); hs.innerHTML = '<option value="">Choose your state</option>'+Object.keys(STATE_TAX).sort((a,b)=>STATE_TAX[a][0].localeCompare(STATE_TAX[b][0])).map(k=>'<option value="'+k+'">'+STATE_TAX[k][0]+'</option>').join('');
+  hs.value = state.home; hs.addEventListener('change',e=>{ state.home = e.target.value; renderIncome(); renderHero(); save(); });
   $('#elig').value = String(state.elig); $('#pro').value = String(state.pro);
   $('#elig').addEventListener('change',e=>{ state.elig = +e.target.value; renderIncome(); renderHero(); save(); });
   $('#pro').addEventListener('change',e=>{ state.pro = +e.target.value; renderIncome(); renderHero(); save(); });

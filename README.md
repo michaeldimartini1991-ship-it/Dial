@@ -27,7 +27,7 @@ Four factors, each scored from 0 (steady) to 1 (risky), weighted to total 100:
 
 **Cash cushion:** 3 to 12 months of costs, scaling with income risk.
 
-**Tax set-aside:** chosen rate × NIL income received since January 1, minus taxes already paid.
+**Tax set-aside:** federal rate (default 25%, for federal income and self-employment tax) × NIL income received since January 1, plus state income tax for the athlete's state using 2026 single-filer brackets (Tax Foundation, as of January 1, 2026), minus taxes already paid.
 
 The weights and limits are judgment calls, not estimates from data. They're kept as named constants at the top of the engine so they're easy to test and change.
 
@@ -54,7 +54,7 @@ The weights and limits are judgment calls, not estimates from data. They're kept
 - Expected returns, volatilities and correlations are round-number assumptions, not estimates from historical data.
 - The simulation assumes normally distributed yearly returns, which understates extreme crashes.
 - The income risk weights haven't been validated against real athlete outcomes.
-- Taxes are a simple flat-rate estimate.
+- Taxes are an estimate. Federal tax is a flat rate, and state tax applies brackets to gross NIL income with no deductions, so it leans high. Local income taxes (such as New York City's) are not included.
 
 ## Possible next steps
 

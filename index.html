@@ -325,6 +325,22 @@ details.why .stress{padding:18px 0 4px}
 @keyframes inSweep{to{stroke-dashoffset:0}}
 @keyframes inUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){#inArc{animation:none;stroke-dashoffset:0}.inTitle,.inTag{animation:none;opacity:1}#intro{transition:none}}
+/* welcome screen (shown after the opening graphic) */
+#welcome{position:fixed;inset:0;z-index:99;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(700px 420px at 50% 30%,var(--glow1),transparent 70%),radial-gradient(600px 400px at 80% 90%,var(--glow2),transparent 70%),var(--page);
+  transition:opacity .6s ease,transform .6s ease}
+#welcome.out{opacity:0;transform:scale(1.04);pointer-events:none}
+#welcome .wIn{text-align:center;width:min(440px,100%)}
+#welcome .wTitle,#welcome .wLine,#welcome .wAsk,#welcome .wGo{opacity:0}
+#welcome.go .wTitle{animation:inUp .8s .1s ease forwards}
+#welcome.go .wLine{animation:inUp .8s 1.1s ease forwards}
+#welcome.go .wAsk{animation:inUp .8s 2.3s ease forwards}
+#welcome.go .wGo{animation:inUp .8s 2.9s ease forwards}
+.wTitle{font-family:var(--serif);font-size:64px;line-height:1;letter-spacing:-.03em;color:var(--ink)}
+.wLine{font-size:19px;color:var(--ink2);margin-top:22px}
+.wAsk{font-family:var(--serif);font-size:30px;line-height:1.2;letter-spacing:-.01em;color:var(--ink);margin-top:44px}
+.wGo{margin-top:26px;font-size:17px;padding:14px 30px}
+@media (prefers-reduced-motion: reduce){#welcome.go .wTitle,#welcome.go .wLine,#welcome.go .wAsk,#welcome.go .wGo{animation:none;opacity:1}#welcome{transition:none}}
 /* cards */
 .group,.hero,.blk,#p4body .chartBox,#p4body .stats{background:var(--paper);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:26px 30px 30px}
 .hero{padding:34px 32px}
@@ -370,6 +386,14 @@ input[type=range]::-moz-range-thumb{border-color:var(--dialc)}
     <div class="inTag">Investing built around your NIL income</div>
   </div>
   <button class="inSkip" id="inSkip">Skip</button>
+</div>
+<div id="welcome" role="dialog" aria-label="Welcome to Dial" aria-describedby="wLine wAsk" tabindex="-1">
+  <div class="wIn">
+    <div class="wTitle">Dial</div>
+    <div class="wLine" id="wLine">You are dialed in on the field.</div>
+    <div class="wAsk" id="wAsk">Are you ready to dial in your money?</div>
+    <button class="btn wGo" id="wGo">Dial me in</button>
+  </div>
 </div>
 <div class="wrap">
   <header class="top">
@@ -1297,11 +1321,22 @@ init();
     if(x<1) requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  function finish(){ if(done) return; done = true; el.classList.add('out'); setTimeout(()=>{ el.remove(); const h = $('#s'+state.step+' [tabindex="-1"]'); if(h) h.focus({preventScroll:true}); }, 600); }
+  function finish(){ if(done) return; done = true; el.classList.add('out'); welcome(); setTimeout(()=>el.remove(), 600); }
   const timer = setTimeout(finish, reduce ? 1200 : 4400);
   $('#inSkip').addEventListener('click',()=>{ clearTimeout(timer); finish(); });
   el.addEventListener('click',e=>{ if(e.target===el){ clearTimeout(timer); finish(); } });
   document.addEventListener('keydown',function k(e){ if(e.key==='Escape'){ clearTimeout(timer); finish(); document.removeEventListener('keydown',k); } });
+  /* Welcome screen: "Dial", then the field line, then the question and a button into the app. */
+  function welcome(){
+    const w = $('#welcome'); if(!w){ enterApp(); return; }
+    w.classList.add('go');
+    const go = $('#wGo');
+    setTimeout(()=>go.focus({preventScroll:true}), reduce ? 0 : 3000);
+    let left = false;
+    function leave(){ if(left) return; left = true; w.classList.add('out'); setTimeout(()=>{ w.remove(); enterApp(); }, reduce ? 0 : 600); }
+    go.addEventListener('click', leave);
+  }
+  function enterApp(){ const h = $('#s'+state.step+' [tabindex="-1"]'); if(h) h.focus({preventScroll:true}); }
 })();
 })();
 </script>

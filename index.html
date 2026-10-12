@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: soft blue-gray page, each section on a white card that lifts off it. */
+  --page:#EAF0F6; --glow1:#D6E6F5; --glow2:#E9E2F3; --paper:#FFFFFF; --soft:#F2F5F9; --soft2:#E2E8F0; --ink:#15213B; --ink2:#5B6880; --line:#DFE6EF;
+  --shadow:0 1px 2px rgba(21,33,59,.05),0 8px 24px rgba(21,33,59,.06);
+  --accent:#0E0E0E; --accent-ink:#FFFFFF; --g1:#CFCFCF; --g2:#0E0E0E;
+  --c-cash:#CFE6EE; --c-bonds:#8FC4D6; --c-tips:#5AA9BC; --c-usl:#F2C14E; --c-uss:#EE9B3B; --c-intl:#E0713A; --c-em:#C2413A; --c-reit:#8E3B5E;
+  --f-cash:#0E0E0E; --f-bonds:#0E0E0E; --f-tips:#0E0E0E; --f-usl:#0E0E0E; --f-uss:#0E0E0E; --f-intl:#0E0E0E; --f-em:#FFFFFF; --f-reit:#FFFFFF;
+  --hs:68%; --hl:40%; --hl-soft:88%; --dh:120;
+  --dialc:hsl(var(--dh) var(--hs) var(--hl)); --hs-soft:68%; --dialsoft:hsl(var(--dh) var(--hs-soft) var(--hl-soft));
+  --calm:#2A9D8F; --warm:#E9A23B; --hot:#D1453B; --tax:#7A8CA8; --cush:#5AA9BC; --signed:#E9A23B; --on-fill:#0E0E0E;
+  --serif:'Instrument Serif','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+  --sans:'Geist','Helvetica Neue',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --page:#0D1422; --glow1:#13233A; --glow2:#1C1A33; --paper:#151E31; --soft:#1C2740; --soft2:#26324D; --ink:#ECF1FA; --ink2:#98A5BE; --line:#26324B; --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.25);
+    --accent:#F2F2F2; --accent-ink:#0A0A0A; --g1:#4A4A4A; --g2:#F2F2F2;
+    --c-cash:#1F3A44; --c-bonds:#2C6E80; --c-tips:#3E93A8; --c-usl:#E3B23C; --c-uss:#E08A2E; --c-intl:#D2632E; --c-em:#C04A3E; --c-reit:#A8507A;
+    --f-cash:#F2F2F2; --f-bonds:#F2F2F2; --f-tips:#0A0A0A; --f-usl:#0A0A0A; --f-uss:#0A0A0A; --f-intl:#0A0A0A; --f-em:#F2F2F2; --f-reit:#F2F2F2;
+    --hl:60%; --hl-soft:20%; --hs-soft:28%; --calm:#3CC2B0; --warm:#F0B04A; --hot:#EE6A5E; --tax:#8FA3C2; --cush:#3E93A8; --signed:#F0B04A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0D1422; --glow1:#13233A; --glow2:#1C1A33; --paper:#151E31; --soft:#1C2740; --soft2:#26324D; --ink:#ECF1FA; --ink2:#98A5BE; --line:#26324B; --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.25);
+  --accent:#F2F2F2; --accent-ink:#0A0A0A; --g1:#4A4A4A; --g2:#F2F2F2;
+  --c-cash:#1F3A44; --c-bonds:#2C6E80; --c-tips:#3E93A8; --c-usl:#E3B23C; --c-uss:#E08A2E; --c-intl:#D2632E; --c-em:#C04A3E; --c-reit:#A8507A;
+  --f-cash:#F2F2F2; --f-bonds:#F2F2F2; --f-tips:#0A0A0A; --f-usl:#0A0A0A; --f-uss:#0A0A0A; --f-intl:#0A0A0A; --f-em:#F2F2F2; --f-reit:#F2F2F2;
+  --hl:60%; --hl-soft:20%; --hs-soft:28%; --calm:#3CC2B0; --warm:#F0B04A; --hot:#EE6A5E; --tax:#8FA3C2; --cush:#3E93A8; --signed:#F0B04A; color-scheme:dark;
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);-webkit-text-size-adjust:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 520px at 8% -6%,var(--glow1),transparent 70%),radial-gradient(800px 480px at 100% 0%,var(--glow2),transparent 70%),var(--page);background-attachment:fixed;color:var(--ink);font:300 16px/1.6 var(--sans);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+h1,h2,h3{margin:0;font-weight:400}
+h1{font-family:var(--serif);font-size:clamp(40px,6.8vw,68px);line-height:1;letter-spacing:-.025em;text-wrap:balance}
+h2{font-family:var(--serif);font-size:clamp(32px,5.4vw,52px);line-height:1.02;letter-spacing:-.02em}
+h3{font-size:15px;font-weight:500}
+p{margin:0}
+b{font-weight:500}
+.muted{color:var(--ink2)}
+.small{font-size:14px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+[tabindex="-1"]:focus{outline:none}
+button{font:inherit;color:inherit;cursor:pointer}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0 18px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-size:24px;letter-spacing:-.01em}
+.nav{display:flex;gap:2px;flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav button{white-space:nowrap}
+.nav button{background:none;border:0;padding:6px 12px;border-radius:999px;font-size:14px;font-weight:400;color:var(--ink2)}
+.nav button:hover{color:var(--ink)}
+.nav button[aria-current="step"]{background:var(--ink);color:var(--paper);font-weight:500}
+hr.rule{border:0;border-top:1px solid var(--line);margin:0;opacity:.7}
+
+/* sticky mini */
+.mini{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);box-shadow:var(--shadow);padding:12px 0}
+.mini .in{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.mini .lbl{font-size:14px;color:var(--ink2);white-space:nowrap}
+.mini input[type=range]{flex:1 1 180px;min-width:140px}
+.mini .val{font-weight:500;font-size:14px;min-width:140px}
+.mini .link{background:none;border:0;color:var(--ink2);text-decoration:underline;text-underline-offset:3px;padding:4px;font-size:14px}
+
+/* range */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:32px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--g1),var(--g2))}
+input[type=range]::-moz-range-track{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--g1),var(--g2))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;margin-top:-10px;border-radius:50%;background:var(--paper);border:2px solid var(--ink)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--paper);border:2px solid var(--ink)}
+.rangeends{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);margin-top:0}
+
+.step{padding:56px 0 96px}
+.step[hidden]{display:none}
+.lede{font-size:19px;color:var(--ink2);max-width:52ch;margin-top:20px;font-weight:300}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1fr;grid-template-areas:'g' 'i' 'w';gap:40px;margin-top:48px}
+.gcol{grid-area:g}.icol{grid-area:i}.waveBox{grid-area:w}
+@media (min-width:880px){.hero{grid-template-columns:1fr 1fr;grid-template-areas:'g i' 'w i';grid-template-rows:auto 1fr;column-gap:72px;row-gap:28px;align-items:start}}
+.gaugeBox{max-width:440px;margin:0 auto;width:100%}
+#gauge{width:100%;height:auto;display:block;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+#gauge:active{cursor:grabbing}
+.gnum{font-family:var(--serif);fill:var(--ink)}
+.glab{fill:var(--ink2);font-size:12.5px;font-family:var(--sans)}
+.gtrack{stroke:var(--soft2)}
+.tick{stroke:var(--ink2);stroke-width:1}
+.tick.maj{stroke:var(--ink);stroke-width:1.5}
+.band h2{font-size:clamp(34px,5vw,46px)}
+.panel{background:var(--soft);border-radius:20px;padding:6px 28px}
+.facts{display:grid}
+.fact{padding:18px 0;border-bottom:1px solid var(--line)}
+.fact:last-child{border-bottom:0}
+.fact .k{font-size:13.5px;color:var(--ink2)}
+.fact .v{font-size:16px;margin-top:2px}
+.fact b{font-family:var(--serif);font-weight:400;font-size:1.55em;letter-spacing:-.01em;line-height:1}
+.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+@media (max-width:560px){.fields{grid-template-columns:1fr 1fr}.fields .f3{grid-column:1/-1}}
+.field label{display:block;font-size:13.5px;color:var(--ink2);margin-bottom:6px}
+.field input[type=text]{width:100%;font:400 22px/1.2 var(--sans);padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
+.field input[type=text]:focus{outline:none;border-color:var(--ink)}
+.field .hint{font-size:12.5px;color:var(--ink2);margin-top:4px}
+.field .err{font-size:12.5px;color:var(--ink);margin-top:4px;min-height:1em;font-weight:500}
+.waveBox svg{width:100%;height:auto;display:block}
+.btn{display:inline-block;border:1px solid var(--ink);border-radius:999px;padding:14px 30px;font-weight:500;font-size:16px;background:var(--ink);color:var(--paper)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn:hover{opacity:.88}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:48px}
+.note{margin-top:20px;padding:14px 18px;border-radius:14px;background:var(--soft);border-left:3px solid var(--ink);font-size:15px}
+.note[hidden]{display:none}
+
+/* portfolio */
+.bar{display:flex;gap:3px;height:44px;margin-top:40px}
+.bar div{display:flex;align-items:center;justify-content:center;font-weight:500;font-size:14px;min-width:0;overflow:hidden;border-radius:6px;border:1px solid rgba(128,128,128,.35)}
+.group{margin-top:28px}
+.grouphead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--ink);padding-bottom:10px}
+.grouphead h3{font-family:var(--serif);font-size:28px;font-weight:400;letter-spacing:-.01em}
+.grouphead .sub{color:var(--ink2);font-size:14px;font-family:var(--sans);margin-left:8px}
+.grouphead .tot{font-size:14px;color:var(--ink2)}
+.hold{display:grid;grid-template-columns:1fr auto;gap:2px 20px;padding:22px 0;border-bottom:1px solid var(--line)}
+.hold .nm{display:flex;align-items:center;gap:12px;font-weight:500;font-size:17px}
+.sw{width:12px;height:12px;border-radius:3px;flex:none;border:1px solid rgba(128,128,128,.45)}
+.hold .amt{text-align:right;grid-row:span 3}
+.hold .amt .d{font-family:var(--serif);font-size:34px;line-height:1;letter-spacing:-.01em}
+.hold .amt .p{font-size:13.5px;color:var(--ink2);margin-top:4px}
+.hold .ds{color:var(--ink2);font-size:15px;max-width:56ch}
+.hold .fu{font-size:13.5px;color:var(--ink2)}
+ol.how{margin:18px 0 0;padding:0;list-style:none;counter-reset:s;display:grid;gap:22px}
+ol.how li{counter-increment:s;display:grid;grid-template-columns:36px 1fr;gap:14px}
+ol.how li::before{content:counter(s);width:28px;height:28px;border-radius:50%;border:1px solid var(--ink);font-weight:500;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+ol.how li b{display:block}
+.fine{margin-top:64px;font-size:13px;color:var(--ink2);max-width:76ch;border-top:1px solid var(--line);padding-top:20px}
+
+/* picks */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;margin-top:28px;background:var(--paper)}
+.seg button{background:none;border:0;border-radius:999px;padding:9px 18px;font-size:14px;color:var(--ink2)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);font-weight:500}
+.blk{margin-top:52px}
+.bh{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid var(--ink);padding-bottom:12px}
+.bh .nm{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:30px;letter-spacing:-.01em}
+.bh .bt{font-size:14px;color:var(--ink2);white-space:nowrap}
+.bh .bt .d{font-family:var(--serif);font-size:30px;color:var(--ink);margin-right:8px;letter-spacing:-.01em}
+.fit{color:var(--ink2);margin-top:12px;max-width:60ch;font-size:15.5px}
+.pk{display:grid;grid-template-columns:104px 1fr auto;gap:4px 20px;padding:18px 0;border-bottom:1px solid var(--line);align-items:start}
+.pk .tk{font-family:var(--serif);font-size:30px;line-height:1;letter-spacing:-.01em}
+.pk .role{font-size:12.5px;color:var(--ink2);margin-top:6px}
+.pk .n{font-weight:500}
+.pk .w{color:var(--ink2);font-size:14.5px;margin-top:2px;max-width:56ch}
+.pk .rt{text-align:right;white-space:nowrap}
+.pk .rt .am{font-family:var(--serif);font-size:26px;line-height:1}
+.pk .rt .fee{font-size:13px;color:var(--ink2);margin-top:4px}
+.pk.sub{padding-left:0}
+.pk.opt{opacity:.92}
+@media (max-width:640px){.pk{grid-template-columns:1fr auto}.pk .tk{grid-column:1}.pk .bd{grid-column:1/-1;grid-row:2}.pk .rt{grid-column:2;grid-row:1}.pk .tkc{grid-column:1}}
+.blk details{margin-top:6px;border-top:0;padding-top:0}
+.blk summary{font-size:14px;color:var(--ink2);padding:12px 0;list-style:none;cursor:pointer}
+.blk summary::-webkit-details-marker{display:none}
+.blk summary::before{content:'+';display:inline-block;width:18px;font-weight:500}
+.blk details[open] summary::before{content:'\2212'}
+.sleeve{font-size:14px;color:var(--ink2);margin-top:14px;padding:12px 16px;background:var(--soft);border-radius:12px}
+table.list{width:100%;border-collapse:collapse;margin-top:16px}
+table.list th{font-size:13px;color:var(--ink2);font-weight:400;text-align:left;padding:8px 0;border-bottom:1px solid var(--ink)}
+table.list th:last-child,table.list td:last-child{text-align:right}
+table.list td{padding:12px 0;border-bottom:1px solid var(--line);vertical-align:baseline}
+table.list td.t{font-family:var(--serif);font-size:22px;width:110px}
+table.list tr.tot td{border-bottom:0;font-weight:500;padding-top:16px}
+
+/* outlook */
+.headline{font-family:var(--serif);font-size:clamp(26px,4.2vw,40px);line-height:1.15;letter-spacing:-.015em;margin-top:24px;max-width:24em}
+.headline b{font-weight:400;font-style:italic}
+.chartBox{margin-top:36px}
+#fan{width:100%;height:auto;display:block;touch-action:pan-y}
+.axis text{fill:var(--ink2);font-size:11.5px;font-family:var(--sans)}
+.axis line{stroke:var(--line)}
+.readout{min-height:44px;margin-top:8px;font-size:15px}
+.legend{display:flex;gap:22px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);margin-top:10px}
+.legend i{display:inline-block;width:22px;height:0;border-top:2px solid;vertical-align:middle;margin-right:8px}
+.legend i.band{height:10px;border:0;background:var(--ink);opacity:.1;vertical-align:-1px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;margin-top:44px;padding-top:28px;border-top:1px solid var(--line)}
+.stat .k{font-size:13.5px;color:var(--ink2)}
+.stat .v{font-family:var(--serif);font-size:44px;line-height:1.05;letter-spacing:-.02em;margin-top:4px}
+.stress{margin-top:16px;display:grid;gap:26px}
+.srow .top2{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.srow .r{font-family:var(--serif);font-size:26px;white-space:nowrap}
+.srow .meter{height:3px;background:var(--soft2);margin-top:10px}
+.srow .meter div{height:100%;background:var(--ink)}
+details.as{margin-top:48px;border-top:1px solid var(--line);padding-top:16px}
+details.as summary{cursor:pointer;font-weight:500;font-size:15px}
+table.as{width:100%;border-collapse:collapse;margin-top:14px;font-size:14.5px}
+table.as th,table.as td{text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid var(--line)}
+table.as th{font-weight:400;color:var(--ink2)}
+.scroll{overflow-x:auto}
+
+/* maintain */
+.rules{margin:24px 0 0;padding:0;list-style:none;display:grid;gap:12px;max-width:62ch}
+.rules li{padding-left:22px;position:relative}
+.rules li::before{content:'';position:absolute;left:0;top:.72em;width:10px;border-top:1px solid var(--ink)}
+table.trk{width:100%;border-collapse:collapse;margin-top:18px;min-width:580px}
+table.trk th{font-size:13px;color:var(--ink2);font-weight:400;text-align:right;padding:8px;border-bottom:1px solid var(--ink)}
+table.trk th:first-child,table.trk td:first-child{text-align:left;padding-left:0}
+table.trk td{padding:12px 8px;border-bottom:1px solid var(--line);text-align:right}
+table.trk input{width:116px;font:400 16px var(--sans);padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);text-align:right}
+table.trk input:focus{outline:none;border-color:var(--ink)}
+.flag{font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.ok{color:var(--ink2)}
+.verdict{margin-top:22px;font-family:var(--serif);font-size:28px;line-height:1.2;letter-spacing:-.01em}
+.row2{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;margin-top:22px}
+@media (max-width:640px){.bh .nm{font-size:24px}.bh .bt .d{font-size:24px}.mini .val{min-width:0}.wrap{padding:0 20px}.step{padding:40px 0 72px}}
+
+/* income */
+.ifields{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:22px}
+.field select{width:100%;font:400 18px/1.2 var(--sans);padding:13px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
+.field select:focus{outline:none;border-color:var(--ink)}
+.ifields .field input[type=text]{font-size:20px}
+table.pay{width:100%;border-collapse:collapse;margin-top:16px;min-width:560px}
+table.pay th{font-size:13px;color:var(--ink2);font-weight:400;text-align:left;padding:8px 8px 8px 0;border-bottom:1px solid var(--ink)}
+table.pay td{padding:8px 8px 8px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+table.pay input{font:400 16px var(--sans);padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);width:100%}
+table.pay input:focus{outline:none;border-color:var(--ink)}
+table.pay td.st{font-size:13.5px;white-space:nowrap;width:96px}
+table.pay td.st .sig{border:1px solid var(--ink);border-radius:999px;padding:2px 9px}
+table.pay td.st .rec{background:var(--ink);color:var(--paper);border-radius:999px;padding:2px 9px}
+table.pay td.st .bad{color:var(--ink2)}
+table.pay button{background:none;border:0;color:var(--ink2);text-decoration:underline;text-underline-offset:3px;font-size:13.5px;padding:6px 2px}
+.pill{display:inline-block;border:1px solid var(--ink);border-radius:999px;padding:3px 12px;font-size:13.5px;font-weight:500;margin-top:10px}
+.pill.hi{background:var(--ink);color:var(--paper)}
+.flow{display:flex;gap:3px;height:44px;margin-top:22px}
+.flow div{display:flex;align-items:center;justify-content:center;font-weight:500;font-size:13.5px;min-width:0;overflow:hidden;border-radius:6px;border:1px solid rgba(128,128,128,.35);white-space:nowrap}
+.adj{margin-top:14px;font-size:15px}
+.adj label{display:inline-flex;gap:10px;align-items:center;cursor:pointer}
+.adj input{width:18px;height:18px;accent-color:var(--ink)}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:var(--soft);border-radius:10px;padding:12px 14px;margin-top:10px;overflow-x:auto;white-space:pre}
+/* recommended range */
+.rscale{position:relative;margin-top:44px;height:14px;border-radius:999px;background:linear-gradient(90deg,var(--calm),var(--warm),var(--hot));opacity:.9}
+.rscale .dim{position:absolute;top:0;bottom:0;background:var(--paper);opacity:.72}
+.rscale .win{position:absolute;top:-6px;bottom:-6px;border:2px solid var(--ink);border-radius:8px}
+.rscale .rec{position:absolute;top:-34px;transform:translateX(-50%);font-family:var(--serif);font-size:26px;line-height:1;white-space:nowrap}
+.rscale .rec::after{content:'';position:absolute;left:50%;top:30px;width:2px;height:22px;background:var(--ink);transform:translateX(-50%)}
+.rscale .you{position:absolute;top:22px;transform:translateX(-50%);font-size:12.5px;color:var(--ink2);white-space:nowrap}
+.rticks{position:relative;height:18px;font-size:12.5px;color:var(--ink2);margin-top:30px}
+.rticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.rticks span:first-child{transform:none}.rticks span:last-child{transform:translateX(-100%)}
+.rcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:28px}
+.rcard{border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+.rcard.mid{border-color:var(--ink);border-width:2px}
+.rcard .k{font-size:12.5px;color:var(--ink2);letter-spacing:.04em;text-transform:uppercase}
+.rcard .n{font-family:var(--serif);font-size:30px;line-height:1.1;margin-top:6px}
+.rcard .bn{font-weight:500;margin-top:2px}
+.rcard p{font-size:14.5px;color:var(--ink2);margin-top:6px}
+.drange{margin-top:20px}
+.rseg{display:flex;width:100%;margin-top:0}
+.rseg button{flex:1 1 0;padding:9px 6px;font-size:13.5px;white-space:nowrap}
+.rseg button[aria-pressed="true"]{background:var(--dialc)}
+.rseg b{font-weight:600;margin-left:2px}
+.drange .rscale{margin-top:40px}
+.rchips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}
+.rchip{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;min-width:0}
+.rchip:hover{border-color:var(--ink)}
+.rchip.mid{border:2px solid var(--ink)}
+.rchip .n{font-family:var(--serif);font-size:24px;line-height:1}
+.rchip .bn{font-size:13px;margin-top:4px}
+.rchip .k{font-size:11.5px;color:var(--ink2)}
+details.why{margin-top:22px}
+details.why summary{display:inline-flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font-size:14.5px;font-weight:500;padding:8px 14px;border:1px solid var(--line);border-radius:999px}
+details.why summary::-webkit-details-marker{display:none}
+details.why summary::after{content:'';width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+details.why[open] summary::after{transform:rotate(-135deg) translateY(-1px)}
+details.why summary:hover{border-color:var(--ink)}
+details.why .stress{padding:18px 0 4px}
+/* income risk -> dial translation */
+.xlate{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch;margin-top:24px}
+.xcard{border-radius:18px;padding:20px 22px 22px;min-width:0;display:flex;flex-direction:column}
+.xcard.inc{border:1px dashed var(--ink2)}
+.xcard.dial{border:2px solid var(--ink);background:var(--soft)}
+.xcard .lab{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.xcard .sub{font-size:13.5px;color:var(--ink2);margin-top:2px}
+.xcard .big{font-family:var(--serif);font-size:76px;line-height:.95;letter-spacing:-.03em;margin-top:14px}
+.xcard .big small{font-family:var(--sans);font-size:15px;color:var(--ink2);letter-spacing:0;margin-left:6px}
+.xcard .tag{display:inline-block;align-self:flex-start;border:1px solid currentColor;border-radius:999px;padding:2px 11px;font-size:13px;font-weight:500;margin-top:10px}
+.imeter{position:relative;height:8px;border-radius:999px;background:var(--soft2);margin-top:auto;top:14px}
+.imeter div{position:absolute;left:0;top:0;bottom:0;border-radius:999px}
+.imeter + .iends{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);margin-top:22px}
+.xcard.dial .row{display:flex;align-items:flex-end;gap:14px;margin-top:6px}
+.xcard.dial svg{width:120px;height:auto;flex:none}
+.xcard.dial .rng{font-size:14.5px;margin-top:auto;padding-top:14px}
+.xarrow{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink2);font-size:12.5px;text-align:center}
+.xarrow svg{width:46px;height:20px}
+@media (max-width:720px){.xlate{grid-template-columns:1fr}.xarrow{flex-direction:row}.xarrow svg{transform:rotate(90deg);width:30px}}
+/* yearly check-in */
+.ckQ{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:20px}
+.ckQ input[type=text]{width:100%;font:400 20px/1.2 var(--sans);padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
+.ckCompare{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-top:8px}
+.ckBox{border:1px solid var(--line);border-radius:16px;padding:16px 18px;min-width:0}
+.ckBox.now{border:2px solid var(--ink)}
+.ckBox .k{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.ckBox .n{font-family:var(--serif);font-size:44px;line-height:1;margin-top:8px}
+.ckBox .d{font-size:14.5px;color:var(--ink2);margin-top:6px}
+.ckDo{margin-top:22px;font-family:var(--serif);font-size:30px;line-height:1.2;letter-spacing:-.01em}
+@media (max-width:640px){.ckCompare{grid-template-columns:1fr}.ckCompare .xarrow svg{transform:rotate(90deg)}}
+/* opening graphic */
+#intro{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(700px 420px at 50% 30%,var(--glow1),transparent 70%),radial-gradient(600px 400px at 80% 90%,var(--glow2),transparent 70%),var(--page);
+  transition:opacity .6s ease,transform .6s ease}
+#intro.out{opacity:0;transform:scale(1.04);pointer-events:none}
+#intro .inIn{text-align:center;width:min(360px,100%)}
+#intro .inGauge{width:100%;height:auto;display:block}
+#inArc{stroke-dasharray:371 371;stroke-dashoffset:371;animation:inSweep 2.4s .3s cubic-bezier(.3,.7,.2,1) forwards}
+.inNum{font-family:var(--serif);font-size:64px;line-height:1;margin-top:-14px;letter-spacing:-.03em;color:var(--ink)}
+.inTitle{font-family:var(--serif);font-size:44px;line-height:1.1;margin-top:28px;opacity:0;animation:inUp .8s 1.6s ease forwards}
+.inTag{font-size:16px;color:var(--ink2);margin-top:8px;opacity:0;animation:inUp .8s 2.1s ease forwards}
+.inSkip{position:absolute;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));background:none;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:14px;color:var(--ink2)}
+.inSkip:hover{color:var(--ink);border-color:var(--ink)}
+@keyframes inSweep{to{stroke-dashoffset:0}}
+@keyframes inUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){#inArc{animation:none;stroke-dashoffset:0}.inTitle,.inTag{animation:none;opacity:1}#intro{transition:none}}
+/* cards */
+.group,.hero,.blk,#p4body .chartBox,#p4body .stats{background:var(--paper);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:26px 30px 30px}
+.hero{padding:34px 32px}
+.blk{margin-top:24px}
+#p4body .stats{border-top:1px solid var(--line);margin-top:24px}
+.group .grouphead,.blk .bh{border-bottom-color:var(--line)}
+.grouphead h3{color:var(--ink)}
+.lede{color:var(--ink2)}
+.fine{border-top-color:transparent}
+@media (max-width:640px){.group,.hero,.blk,#p4body .chartBox,#p4body .stats{padding:20px 18px 22px;border-radius:18px}}
+/* color + interaction */
+#gNum,#bandName,.mini .val{color:var(--dialc);fill:var(--dialc);transition:fill .25s,color .25s}
+#gKnob circle:first-child{stroke:var(--dialc);transition:stroke .25s}
+#gKnob circle:last-child{fill:var(--dialc);transition:fill .25s}
+input[type=range]::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--calm),var(--warm),var(--hot))}
+input[type=range]::-moz-range-track{background:linear-gradient(90deg,var(--calm),var(--warm),var(--hot))}
+input[type=range]::-webkit-slider-thumb{border-color:var(--dialc)}
+input[type=range]::-moz-range-thumb{border-color:var(--dialc)}
+.nav button[aria-current="step"]{background:var(--dialc);color:var(--paper)}
+.btn:not(.ghost){background:var(--dialc);border-color:var(--dialc);color:var(--paper);transition:background .25s,border-color .25s}
+.panel{background:var(--dialsoft);transition:background .25s}
+.bar div,.flow div{transition:opacity .15s,transform .15s;cursor:default}
+.bar:hover div,.flow:hover div{opacity:.4}
+.bar div:hover,.flow div:hover{opacity:1;transform:translateY(-2px)}
+.hold{transition:background .15s}
+.hold.hl{background:var(--soft)}
+.srow .meter div{transition:width .3s}
+.flag{color:var(--hot)}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="intro" role="dialog" aria-label="Dial is loading" tabindex="-1">
+  <div class="inIn">
+    <svg viewBox="0 0 320 170" class="inGauge" aria-hidden="true">
+      <defs><linearGradient id="ig" gradientUnits="userSpaceOnUse" x1="42" y1="0" x2="278" y2="0"><stop offset="0" style="stop-color:var(--calm)"/><stop offset=".5" style="stop-color:var(--warm)"/><stop offset="1" style="stop-color:var(--hot)"/></linearGradient></defs>
+      <path d="M 42 155 A 118 118 0 0 1 278 155" fill="none" stroke="var(--soft2)" stroke-width="10" stroke-linecap="round"/>
+      <path id="inArc" d="M 42 155 A 118 118 0 0 1 278 155" fill="none" stroke="url(#ig)" stroke-width="10" stroke-linecap="round"/>
+      <g id="inNeedle" transform="rotate(-90 160 155)"><line x1="160" y1="155" x2="160" y2="72" stroke="var(--ink)" stroke-width="3.5" stroke-linecap="round"/><circle cx="160" cy="155" r="7" fill="var(--ink)"/></g>
+    </svg>
+    <div class="inNum" id="inNum">0</div>
+    <div class="inTitle">Dial</div>
+    <div class="inTag">Investing built around your NIL income</div>
+  </div>
+  <button class="inSkip" id="inSkip">Skip</button>
+</div>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Dial</div>
+    <nav class="nav" aria-label="Steps">
+      <button data-go="1">1 Income</button>
+      <button data-go="2">2 Dial</button>
+      <button data-go="3">3 Portfolio</button>
+      <button data-go="4">4 Picks</button>
+      <button data-go="5">5 Outlook</button>
+      <button data-go="6">6 Check-in</button>
+    </nav>
+  </header>
+</div>
+<hr class="rule">
+
+<div class="mini" id="mini" hidden>
+  <div class="wrap in">
+    <span class="lbl">Risk dial</span>
+    <input type="range" id="dialMini" min="0" max="100" step="1" aria-label="Risk dial, 0 calmest to 100 wildest">
+    <span class="val" id="miniVal"></span>
+    <button class="link" id="editBtn">Edit amount and years</button>
+  </div>
+</div>
+
+<main class="wrap">
+  <!-- 1 income -->
+  <section class="step" id="s1" aria-labelledby="h0">
+    <h1 id="h0" tabindex="-1">How steady is your NIL money?</h1>
+    <p class="lede">NIL pays in chunks, not paychecks. List your payments and we measure how risky your income is, set aside money for taxes and a cash cushion, and recommend a risk dial range to match.</p>
+    <p class="note" id="sampleNote">These are sample payments for a made-up athlete. Replace them with your own.</p>
+
+    <div class="group">
+      <div class="grouphead"><h3>Your payments</h3><span class="tot">Past dates count as received, future dates as signed</span></div>
+      <div class="scroll"><table class="pay"><thead><tr><th style="width:170px">Date</th><th style="width:150px">Amount</th><th>From</th><th>Status</th><th></th></tr></thead><tbody id="payRows"></tbody></table></div>
+      <div class="row2"><button class="btn ghost" id="addPay" style="padding:11px 20px;font-size:15px">Add a payment</button><button class="btn ghost" id="clearPay" style="padding:11px 20px;font-size:15px">Clear all</button></div>
+    </div>
+
+    <div class="group">
+      <div class="grouphead"><h3>About you</h3></div>
+      <div class="ifields">
+        <div class="field"><label for="cashNow">NIL money you have now</label><input type="text" id="cashNow" inputmode="decimal" autocomplete="off"></div>
+        <div class="field"><label for="spend">Monthly costs NIL covers</label><input type="text" id="spend" inputmode="decimal" autocomplete="off"><div class="hint">Rent, food, phone, travel</div></div>
+        <div class="field"><label for="elig">Years of eligibility left</label><select id="elig"><option value="0">Final season</option><option value="1">1 year</option><option value="2">2 years</option><option value="3">3 years</option><option value="4">4 or more</option></select></div>
+        <div class="field"><label for="pro">Chance of a pro career</label><select id="pro"><option value="0">Not planning on it</option><option value="0.1">Long shot</option><option value="0.35">Real chance</option><option value="0.7">Likely</option></select></div>
+        <div class="field"><label for="taxRate">Tax set-aside rate</label><input type="text" id="taxRate" inputmode="decimal" autocomplete="off"><div class="hint">Percent of this year's income</div></div>
+        <div class="field"><label for="taxPaid">Taxes already paid this year</label><input type="text" id="taxPaid" inputmode="decimal" autocomplete="off"><div class="hint">Estimated payments sent in</div></div>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="grouphead"><h3>Income risk and your dial</h3></div>
+      <div id="riskOut"></div>
+      <div id="rangeOut"></div>
+    </div>
+
+    <div class="group">
+      <div class="grouphead"><h3>Where your NIL money goes</h3></div>
+      <div id="flowOut"></div>
+    </div>
+
+    <details class="as"><summary>How the score works</summary><div id="howOut"></div></details>
+    <div class="actions"><button class="btn" id="toDial">Invest it</button></div>
+  </section>
+
+  <!-- 2 dial -->
+  <section class="step" id="s2" aria-labelledby="h1">
+    <h1 id="h1" tabindex="-1">How bumpy a ride can you take?</h1>
+    <p class="lede">Set the dial from 0 to 100. We build a diversified portfolio for that level of risk, then show you exactly what to buy.</p>
+    <div class="hero">
+      <div class="gcol">
+        <div class="gaugeBox">
+          <svg id="gauge" viewBox="0 -24 320 214" aria-hidden="true">
+            <defs>
+              <linearGradient id="gg" gradientUnits="userSpaceOnUse" x1="42" y1="0" x2="278" y2="0">
+                <stop offset="0" style="stop-color:var(--calm)"/><stop offset=".5" style="stop-color:var(--warm)"/><stop offset="1" style="stop-color:var(--hot)"/>
+              </linearGradient>
+            </defs>
+            <g id="gTicks"></g>
+            <path id="gRange" fill="none" stroke-width="12" stroke-linecap="butt" opacity=".5"/>
+            <g id="gRec"><path d="M0,-6 L4.5,2 L-4.5,2 Z"/></g>
+            <path id="gLabelPath" fill="none" stroke="none"/>
+            <text id="gLabel" font-size="11" font-family="var(--sans)" font-weight="500" letter-spacing=".02em"><textPath href="#gLabelPath" startOffset="50%" text-anchor="middle">Your recommended range</textPath></text>
+            <path class="gtrack" d="M 42 155 A 118 118 0 0 1 278 155" fill="none" stroke-width="5" stroke-linecap="round"/>
+            <path id="gArc" d="M 42 155 A 118 118 0 0 1 278 155" fill="none" stroke="url(#gg)" stroke-width="5" stroke-linecap="round"/>
+            <g id="gKnob"><circle r="13" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/><circle r="3.5" fill="var(--ink)"/></g>
+            <text id="gNum" class="gnum" x="160" y="150" text-anchor="middle" font-size="92">50</text>
+            <text class="glab" x="160" y="176" text-anchor="middle">risk dial</text>
+            <text class="glab" x="42" y="176" text-anchor="middle">0</text>
+            <text class="glab" x="278" y="176" text-anchor="middle">100</text>
+          </svg>
+        </div>
+        <div class="gaugeBox" style="margin-top:8px">
+          <input type="range" id="dial" min="0" max="100" step="1" aria-label="Risk dial, 0 calmest to 100 wildest">
+          <div class="rangeends"><span>Calmest</span><span>Wildest</span></div>
+        </div>
+        <div class="gaugeBox drange" id="dialRange"></div>
+      </div>
+      <div class="icol">
+        <div class="band">
+          <p class="small muted" id="adjLine" style="margin-bottom:8px"></p>
+          <h2 id="bandName">Balanced</h2>
+          <p class="muted" id="bandText" style="margin-top:12px;max-width:44ch"></p>
+        </div>
+        <div class="panel" style="margin-top:28px">
+          <div class="facts">
+            <div class="fact"><div class="k">What's inside</div><div class="v" id="fMix"></div></div>
+            <div class="fact"><div class="k">An average year</div><div class="v" id="fAvg"></div></div>
+            <div class="fact"><div class="k">A rough year, about 1 in 20</div><div class="v" id="fBad"></div></div>
+          </div>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="amount">Amount to invest</label><input type="text" id="amount" inputmode="decimal" autocomplete="off"><div class="err" id="eAmount"></div></div>
+          <div class="field"><label for="years">Years to leave it</label><input type="text" id="years" inputmode="numeric" autocomplete="off"><div class="err" id="eYears"></div></div>
+          <div class="field f3"><label for="monthly">Add each month</label><input type="text" id="monthly" inputmode="decimal" autocomplete="off"><div class="hint">Optional</div><div class="err" id="eMonthly"></div></div>
+        </div>
+        <div class="adj"><label><input type="checkbox" id="applyAdj" checked> Keep my dial within the range my income supports</label> <button class="btn ghost" id="useRec" style="padding:7px 16px;font-size:14px;margin-left:8px"></button></div>
+        <div class="note" id="note1" hidden></div>
+      </div>
+      <div class="waveBox">
+        <svg id="wave" viewBox="0 0 600 150" role="img" aria-label="Illustration of how bumpy a two-year ride feels at this dial setting" preserveAspectRatio="none"></svg>
+        <p class="small muted" style="margin-top:10px">A made-up two-year ride at this setting, to show how bumpy it feels. Not a forecast.</p>
+      </div>
+    </div>
+    <div class="actions"><button class="btn" id="build">Build my portfolio</button></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="step" id="s3" aria-labelledby="h2a" hidden>
+    <h2 id="h2a" tabindex="-1">Your portfolio, dial <span id="p2dial"></span></h2>
+    <p class="lede" id="p2lede"></p>
+    <div id="p2body"></div>
+    <div class="actions"><button class="btn ghost" data-go="2">Back</button><button class="btn" data-go="4">See the picks</button></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="step" id="s4" aria-labelledby="h3a" hidden>
+    <h2 id="h3a" tabindex="-1">Picks for dial <span id="p3dial"></span></h2>
+    <p class="lede" id="p3lede"></p>
+    <div id="p3body"></div>
+    <div class="actions"><button class="btn ghost" data-go="3">Back</button><button class="btn" data-go="5">What to expect</button></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="step" id="s5" aria-labelledby="h4a" hidden>
+    <h2 id="h4a" tabindex="-1">What to expect</h2>
+    <div id="p4body"></div>
+    <div class="actions"><button class="btn ghost" data-go="4">Back</button><button class="btn" data-go="6">Keep it on track</button></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="step" id="s6" aria-labelledby="h5a" hidden>
+    <h2 id="h5a" tabindex="-1">Your yearly check-in</h2>
+    <div id="p5body"></div>
+    <div class="actions"><button class="btn ghost" data-go="5">Back</button><button class="btn ghost" data-go="2">Change the dial</button></div>
+  </section>
+
+  <p class="fine">Educational tool, not investment, tax or legal advice. Tax set-asides are rough estimates; NIL income is usually self-employment income, so confirm what you owe with a tax professional. Return and risk figures are round-number assumptions for illustration, not forecasts or promises, and real markets can do worse than any scenario shown. Funds and stocks are examples chosen by simple rules, not personal recommendations, and their fees and holdings change. Confirm details with the fund provider before buying, and consider a licensed advisor for large amounts.</p>
+</main>
+
+<script>
+/* ===== Allocation & risk engine (illustrative assumptions, not forecasts) ===== */
+const ASSETS = [
+  {id:'cash', name:'Cash and T-bills', group:'steady', ret:.035, vol:.010, er:.0010, color:'--c-cash',
+   what:'Money that barely moves. It earns interest and is there when you need it.',
+   funds:'High-yield savings, T-bill ETF or money market fund'},
+  {id:'bonds', name:'Core bonds', group:'steady', ret:.045, vol:.060, er:.0005, color:'--c-bonds',
+   what:'Loans to the US government and strong companies. Steady interest, usually calmer than stocks.',
+   funds:'Broad bond index fund'},
+  {id:'tips', name:'Inflation-protected bonds', group:'steady', ret:.042, vol:.065, er:.0010, color:'--c-tips',
+   what:'Government bonds that rise with inflation, so your buying power holds up.',
+   funds:'Inflation-protected (TIPS) index fund'},
+  {id:'usl', name:'US stocks', group:'growth', ret:.070, vol:.160, er:.0005, color:'--c-usl',
+   what:'Small ownership stakes in thousands of large US companies. The main engine of long-term growth.',
+   funds:'Total US stock market index fund'},
+  {id:'uss', name:'US small companies', group:'growth', ret:.080, vol:.210, er:.0008, color:'--c-uss',
+   what:'Smaller US firms. More growth potential and bigger swings than large companies.',
+   funds:'Small-cap index fund'},
+  {id:'intl', name:'International stocks', group:'growth', ret:.075, vol:.170, er:.0007, color:'--c-intl',
+   what:'Companies in Europe, Japan and other developed countries. Spreads your bet beyond the US.',
+   funds:'Developed-markets index fund'},
+  {id:'em', name:'Emerging markets', group:'growth', ret:.085, vol:.230, er:.0010, color:'--c-em',
+   what:'Companies in fast-growing countries such as India, Brazil and Taiwan. The wildest ride on the list.',
+   funds:'Emerging-markets index fund'},
+  {id:'reit', name:'Real estate (REITs)', group:'growth', ret:.070, vol:.190, er:.0012, color:'--c-reit',
+   what:'Funds that own apartments, warehouses and offices and pass along the rent.',
+   funds:'REIT index fund'}
+];
+const CORR = [
+  [1,.20,.20,0,0,0,0,0],
+  [.20,1,.80,.10,.05,.10,.10,.30],
+  [.20,.80,1,.20,.15,.20,.20,.35],
+  [0,.10,.20,1,.88,.85,.72,.75],
+  [0,.05,.15,.88,1,.78,.70,.78],
+  [0,.10,.20,.85,.78,1,.85,.70],
+  [0,.10,.20,.72,.70,.85,1,.62],
+  [0,.30,.35,.75,.78,.70,.62,1]
+];
+/* Anchor mixes at dial 0, 25, 50, 75, 100 (cash, bonds, TIPS, US, US small, intl, EM, REIT). Dial values in between are blended. */
+const ANCHORS = [
+  [70,20,10, 0, 0, 0, 0,0],
+  [15,35,15,20, 0,12, 0,3],
+  [ 5,25,10,30, 5,17, 3,5],
+  [ 0,10, 5,35,12,20,12,6],
+  [ 0, 0, 0,30,25,15,25,5]
+].map(r=>r.map(x=>x/100));
+const INFLATION = 0.025;
+const MIN_POSITION = 0.02;   /* holdings under 2% are dropped and the rest scaled up */
+const STRESS = [
+  {id:'gfc', name:'2008-style crash', note:'Approximate 2008 calendar-year returns for each asset type.', r:[.015,.05,-.02,-.37,-.34,-.43,-.53,-.37]},
+  {id:'rates', name:'2022-style rate shock', note:'Stocks and bonds fell together as interest rates jumped.', r:[.015,-.13,-.118,-.18,-.204,-.145,-.20,-.245]},
+  {id:'crash', name:'Hypothetical 30% stock crash', note:'Made-up scenario: every stock-like holding falls 30%, bonds edge up.', r:[0,.02,0,-.30,-.30,-.30,-.30,-.30]}
+];
+
+function interpWeights(d){
+  d = Math.max(0, Math.min(100, d));
+  const i = Math.min(3, Math.floor(d/25)), t = (d-25*i)/25;
+  return ANCHORS[i].map((a,k)=>a*(1-t)+ANCHORS[i+1][k]*t);
+}
+function largestRemainder(exact, total){
+  const fl = exact.map(Math.floor);
+  let rem = total - fl.reduce((a,b)=>a+b,0);
+  const order = exact.map((x,i)=>[x-fl[i],i]).sort((a,b)=>b[0]-a[0]);
+  for(let k=0;k<rem;k++) fl[order[k][1]]++;
+  return fl;
+}
+function toPercents(w){
+  let v = w.map(x=>x<MIN_POSITION?0:x);
+  const s = v.reduce((a,b)=>a+b,0);
+  v = v.map(x=>x/s*100);
+  return largestRemainder(v,100);
+}
+function allocateDollars(amount, pcts){
+  return largestRemainder(pcts.map(p=>p/100*amount), Math.round(amount));
+}
+function portfolioStats(pcts){
+  const w = pcts.map(p=>p/100);
+  let mu=0, fee=0, variance=0, growth=0;
+  w.forEach((x,i)=>{ mu += x*(ASSETS[i].ret-ASSETS[i].er); fee += x*ASSETS[i].er; if(ASSETS[i].group==='growth') growth += x; });
+  for(let i=0;i<w.length;i++) for(let j=0;j<w.length;j++) variance += w[i]*w[j]*ASSETS[i].vol*ASSETS[j].vol*CORR[i][j];
+  const sigma = Math.sqrt(variance);
+  return {mu, sigma, geo: mu - variance/2, fee, growth, bad: mu - 1.65*sigma};
+}
+function stressReturn(pcts, scen){ return pcts.reduce((a,p,i)=>a+p/100*scen.r[i],0); }
+function bandFor(d){
+  if(d<=12) return {name:'Protect it', text:'Mostly cash and short, steady holdings. Very little ups and downs, but growth may only just keep up with inflation.'};
+  if(d<=32) return {name:'Cautious', text:'Mostly bonds and cash with a modest slice of stocks. Smaller swings, slower growth.'};
+  if(d<=57) return {name:'Balanced', text:'A mix of stocks for growth and bonds for cushioning. Some rough years, a decent shot at growth.'};
+  if(d<=80) return {name:'Growth', text:'Mostly stocks from around the world. Expect real drops in bad years in exchange for higher long-run growth.'};
+  return {name:'Maximum growth', text:'All stocks and real estate, tilted toward smaller and emerging-market companies. The biggest swings, best suited to money you will not touch for a long time.'};
+}
+/* Seeded random draws so results are repeatable */
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function makeShocks(n, years, seed){
+  const rnd = mulberry32(seed), Z = [];
+  for(let t=0;t<years;t++){
+    const row = new Float64Array(n);
+    for(let i=0;i<n;i+=2){
+      const u1=Math.max(rnd(),1e-12), u2=rnd(), r=Math.sqrt(-2*Math.log(u1));
+      row[i]=r*Math.cos(2*Math.PI*u2); if(i+1<n) row[i+1]=r*Math.sin(2*Math.PI*u2);
+    }
+    let m=0; for(const v of row) m+=v; m/=n;
+    let s=0; for(const v of row) s+=(v-m)*(v-m); s=Math.sqrt(s/n);
+    for(let i=0;i<n;i++) row[i]=(row[i]-m)/s;
+    Z.push(row);
+  }
+  return Z;
+}
+function quantile(sorted,q){ const p=q*(sorted.length-1), lo=Math.floor(p), hi=Math.ceil(p); return sorted[lo]+(sorted[hi]-sorted[lo])*(p-lo); }
+function simulate(mu, sigma, start, annualAdd, years, Z, floor){
+  floor = (floor===undefined) ? -0.5 : floor;
+  const n = Z[0].length, v = new Float64Array(n).fill(start);
+  const out = {p10:[start], p50:[start], p90:[start], invested:[start]};
+  let inv = start;
+  for(let t=0;t<years;t++){
+    inv += annualAdd; const z = Z[t];
+    for(let i=0;i<n;i++){ const r=Math.max(floor, mu+sigma*z[i]); v[i]=v[i]*(1+r)+annualAdd; }
+    const s = Float64Array.from(v).sort();
+    out.p10.push(quantile(s,.10)); out.p50.push(quantile(s,.50)); out.p90.push(quantile(s,.90)); out.invested.push(inv);
+  }
+  out.final = Float64Array.from(v).sort();
+  let above=0; for(const x of out.final) if(x>=inv) above++;
+  out.probAbove = above/n; out.totalInvested = inv;
+  return out;
+}
+/* ===== Income risk engine for NIL athletes =====
+   NIL money arrives in chunks, so the score looks at the chunks themselves (how much rides on the biggest one,
+   and how much is already signed), plus how long the earning window is likely to last.
+   Each factor runs 0 (steady) to 1 (risky); the weights below add up to 100. */
+const INCOME_WEIGHTS = {runway:30, pro:20, chunk:25, signed:25};
+const CUSHION_MIN = 3, CUSHION_MAX = 12;   /* months of costs held in cash, from score 0 to score 100 */
+/* Recommended dial range: riskier income lowers the top of the range.
+   top = 100 - 0.7 x score, bottom = top - 35, suggested = middle. A dial set above the top is capped there. */
+const RANGE_TOP_CUT = 0.7, RANGE_WIDTH = 35;
+const DAY = 86400000;
+function parseISO(d){ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d||''); if(!m) return null; const t = Date.UTC(+m[1],+m[2]-1,+m[3]); return isFinite(t)?t:null; }
+function incomeRisk(payments, today, eligYears, proOdds){
+  const valid = payments.map(p=>({t:parseISO(p.date), a:+p.amount||0})).filter(p=>p.t!==null && p.a>0);
+  const past = valid.filter(p=>p.t<=today && p.t>today-365*DAY);
+  const ahead = valid.filter(p=>p.t>today && p.t<=today+365*DAY);
+  const R12 = past.reduce((s,p)=>s+p.a,0), S12 = ahead.reduce((s,p)=>s+p.a,0);
+  const biggest = past.reduce((m,p)=>Math.max(m,p.a),0);
+  const f = {
+    runway: 1 - Math.min(Math.max(eligYears,0),4)/4,
+    pro: 1 - Math.min(Math.max(proOdds,0),1),
+    chunk: R12>0 ? biggest/R12 : 1,
+    signed: R12>0 ? 1 - Math.min(1, S12/R12) : (S12>0 ? 0 : 1)
+  };
+  let score = 0; for(const k in INCOME_WEIGHTS) score += INCOME_WEIGHTS[k]*f[k];
+  return {score:Math.round(score), f, R12, S12, biggest, nPast:past.length, nAhead:ahead.length};
+}
+function cushionMonths(score){ return CUSHION_MIN + (CUSHION_MAX-CUSHION_MIN)*score/100; }
+function dialRange(score){ const hi = Math.round(100 - RANGE_TOP_CUT*score), lo = Math.max(0, hi - RANGE_WIDTH); return {lo, hi, rec:Math.round((lo+hi)/2)}; }
+function adjustedDial(dial, score){ return Math.min(dial, dialRange(score).hi); }
+function taxReserve(payments, today, rate, paid){
+  const y = new Date(today).getUTCFullYear(), start = Date.UTC(y,0,1);
+  const ytd = payments.map(p=>({t:parseISO(p.date), a:+p.amount||0})).filter(p=>p.t!==null && p.t>=start && p.t<=today).reduce((s,p)=>s+p.a,0);
+  return {ytd, owed:Math.max(0, ytd*rate - paid)};
+}
+function hueFor(x){ x = Math.max(0,Math.min(100,x)); return Math.round(x<=50 ? 172+(40-172)*x/50 : 40+(6-40)*(x-50)/50); }
+const hsl = (x,soft) => 'hsl('+hueFor(x)+' var(--hs) var('+(soft?'--hl-soft':'--hl')+'))';
+function riskBand(score){ return score<34 ? 'Steady' : score<67 ? 'Uneven' : 'Very uncertain'; }
+
+if(false) module.exports={ASSETS,CORR,ANCHORS,interpWeights,toPercents,allocateDollars,portfolioStats,stressReturn,bandFor,makeShocks,simulate,STRESS,INFLATION};
+
+/* ===== Picks: example funds and stocks matched to the dial =====
+   Chosen by simple rules: big, low-cost, broadly diversified index funds first; individual stocks only as an optional
+   small sleeve, picked for the profile of the dial tier (steadier / balanced / bolder). Fees are approximate (2026). */
+const TIERS = ['low','mid','high'];
+const tierOf = d => d<=33 ? 'low' : d>=67 ? 'high' : 'mid';
+const TIER_WORD = {low:'steadier', mid:'balanced', high:'bolder'};
+const same = x => ({low:x, mid:x, high:x});
+const F = (t,n,fee,why) => ({t,n,fee,why});
+const PICKS = {
+  cash: {
+    fit: same('Your safety cushion. Keep it somewhere you can reach quickly.'),
+    core: same(F('SGOV','iShares 0-3 Month Treasury Bond ETF',.0009,'US Treasury bills with under three months left. Barely moves and pays interest.')),
+    alts: same([
+      F('Savings','High-yield savings account',null,'Free to open and FDIC-insured at a bank. Easiest choice for small amounts.'),
+      F('Money market','Treasury money market fund at your brokerage',null,'Often the default cash option at a brokerage and pays similar interest.')
+    ])
+  },
+  bonds: {
+    fit: {low:'Short-term bonds, because they swing the least when interest rates move.',
+          mid:'A broad bond fund that cushions the drops in your stocks.',
+          high:'A small broad-bond cushion. At this dial most of your money is in stocks.'},
+    core: {low:F('VGSH','Vanguard Short-Term Treasury ETF',.0003,'US Treasuries maturing in 1 to 3 years. Small price swings.'),
+           mid:F('BND','Vanguard Total Bond Market ETF',.0003,'Thousands of US government, corporate and mortgage bonds in one fund.'),
+           high:F('BND','Vanguard Total Bond Market ETF',.0003,'Thousands of US government, corporate and mortgage bonds in one fund.')},
+    alts: {low:[F('SCHO','Schwab Short-Term US Treasury ETF',.0003,'Same job as VGSH from a different provider.'),F('BSV','Vanguard Short-Term Bond ETF',.0003,'Short-term government and corporate bonds.')],
+           mid:[F('AGG','iShares Core US Aggregate Bond ETF',.0003,'Same job as BND from a different provider.'),F('SCHZ','Schwab US Aggregate Bond ETF',.0003,'Another broad US bond fund.')],
+           high:[F('AGG','iShares Core US Aggregate Bond ETF',.0003,'Same job as BND from a different provider.'),F('SCHZ','Schwab US Aggregate Bond ETF',.0003,'Another broad US bond fund.')]}
+  },
+  tips: {
+    fit: {low:'Short-term inflation-protected bonds for the least price movement.',
+          mid:'Government bonds that rise with inflation, protecting what your money can buy.',
+          high:'Government bonds that rise with inflation, protecting what your money can buy.'},
+    core: {low:F('VTIP','Vanguard Short-Term Inflation-Protected Securities ETF',.0003,'TIPS with short maturities. Inflation protection with small swings.'),
+           mid:F('SCHP','Schwab US TIPS ETF',.0003,'Treasury Inflation-Protected Securities across all maturities.'),
+           high:F('SCHP','Schwab US TIPS ETF',.0003,'Treasury Inflation-Protected Securities across all maturities.')},
+    alts: {low:[F('STIP','iShares 0-5 Year TIPS Bond ETF',.0003,'Same job as VTIP from a different provider.')],
+           mid:[F('VTIP','Vanguard Short-Term Inflation-Protected Securities ETF',.0003,'A shorter-maturity option with smaller swings.'),F('TIP','iShares TIPS Bond ETF',.0018,'The oldest TIPS fund, with a higher fee.')],
+           high:[F('VTIP','Vanguard Short-Term Inflation-Protected Securities ETF',.0003,'A shorter-maturity option with smaller swings.'),F('TIP','iShares TIPS Bond ETF',.0018,'The oldest TIPS fund, with a higher fee.')]}
+  },
+  usl: {
+    fit: {low:'The whole US market in one fund, with an optional steadier tilt toward dividend payers.',
+          mid:'The whole US market in one fund. No tilt needed at this dial.',
+          high:'The whole US market in one fund, with an optional tilt toward faster-growing companies.'},
+    core: same(F('VTI','Vanguard Total Stock Market ETF',.0003,'Nearly every US-listed company in one fund, from giants to small firms.')),
+    alts: same([F('ITOT','iShares Core S&P Total US Stock Market ETF',.0003,'Same job as VTI from a different provider.'),F('SCHB','Schwab US Broad Market ETF',.0003,'Another total-market fund at a similar cost.')]),
+    tilt: {low:F('SCHD','Schwab US Dividend Equity ETF',.0006,'Profitable companies with strong dividend records. Historically steadier than growth-heavy funds.'),
+           mid:null,
+           high:F('QQQM','Invesco Nasdaq 100 ETF',.0015,'100 large non-financial Nasdaq companies, heavy in technology. More growth, bigger swings.')},
+    tiltAlt: {low:'VIG (Vanguard Dividend Appreciation ETF) is a similar option.', mid:null, high:'VUG (Vanguard Growth ETF) is a broader growth option at a lower fee.'},
+    stocks: {
+      low:[F('JNJ','Johnson & Johnson','','Health care. A long record of paying and raising dividends.'),F('PG','Procter & Gamble','','Household staples people buy in any economy.'),F('KO','Coca-Cola','','Beverages. Steady, dividend-focused, slower growing.')],
+      mid:[F('MSFT','Microsoft','','Software and cloud computing. One of the largest US companies.'),F('BRK.B','Berkshire Hathaway (Class B)','','Owns insurers, railroads, utilities and a large stock portfolio.'),F('JPM','JPMorgan Chase','','The largest US bank, covering banking and investing.')],
+      high:[F('NVDA','Nvidia','','AI chips. The largest company in the S&P 500 this year, and prone to big swings.'),F('AMZN','Amazon','','Online retail and cloud computing. Growth-focused.'),F('AVGO','Broadcom','','Chips and infrastructure software for data centers. Growth-focused.')]
+    }
+  },
+  uss: {
+    fit: {low:'Smaller companies with a value lean tend to be steadier than the growth end.',
+          mid:'A broad small-company fund. Small firms can grow faster and swing more.',
+          high:'Small companies at full strength, with an optional lean toward the bumpiest growth corner.'},
+    core: same(F('VB','Vanguard Small-Cap ETF',.0003,'Roughly 1,300 smaller US companies in one fund.')),
+    alts: same([F('IJR','iShares Core S&P Small-Cap ETF',.0006,'Profitable small companies only, a slightly higher-quality screen.'),F('SCHA','Schwab US Small-Cap ETF',.0004,'Another broad small-cap fund at a low cost.')]),
+    tilt: {low:F('VBR','Vanguard Small-Cap Value ETF',.0007,'Smaller companies priced cheaply relative to their earnings. Often steadier.'),mid:null,
+           high:F('VBK','Vanguard Small-Cap Growth ETF',.0007,'Faster-growing small companies. The wildest US corner.')},
+    tiltAlt: {low:null,mid:null,high:null}
+  },
+  intl: {
+    fit: same('Developed countries outside the US. It keeps you from betting on a single country.'),
+    core: same(F('VEA','Vanguard FTSE Developed Markets ETF',.0003,'Companies across Europe, Japan, Canada, Australia and more.')),
+    alts: same([F('SCHF','Schwab International Equity ETF',.0003,'Same job as VEA from a different provider.'),F('IEFA','iShares Core MSCI EAFE IMI ETF',.0007,'Developed markets outside North America.')])
+  },
+  em: {
+    fit: same('Fast-growing economies. High potential and big swings, which is why it is a small slice at lower dials.'),
+    core: same(F('VWO','Vanguard FTSE Emerging Markets ETF',.0006,'Companies in China, India, Taiwan, Brazil and other emerging economies.')),
+    alts: same([F('IEMG','iShares Core MSCI Emerging Markets ETF',.0009,'Same job as VWO from a different provider.'),F('SCHE','Schwab Emerging Markets Equity ETF',.0011,'Another broad emerging-markets fund.')])
+  },
+  reit: {
+    fit: {low:'Property companies that collect rent. The optional stock picks lean toward steady landlords.',
+          mid:'Property companies that collect rent and pass it along as dividends.',
+          high:'Property companies that collect rent. The optional stock picks lean toward data and infrastructure.'},
+    core: same(F('VNQ','Vanguard Real Estate ETF',.0013,'About 160 US real estate companies across towers, warehouses, housing and more.')),
+    alts: same([F('SCHH','Schwab US REIT ETF',.0007,'A lower-fee REIT fund with a similar mix.'),F('USRT','iShares Core US REIT ETF',.0008,'Another broad REIT fund.')]),
+    stocks: {
+      low:[F('O','Realty Income','','Owns thousands of single-tenant buildings and pays dividends monthly.'),F('PSA','Public Storage','','Self-storage facilities. Steady, rent-driven income.'),F('WELL','Welltower','','Senior housing and health care properties.')],
+      mid:[F('PLD','Prologis','','Warehouses and logistics centers for online shopping.'),F('AMT','American Tower','','Cell towers leased to wireless carriers.'),F('SPG','Simon Property Group','','Large shopping malls and outlet centers.')],
+      high:[F('EQIX','Equinix','','Data centers that host the internet and AI workloads.'),F('DLR','Digital Realty','','Data centers leased to cloud and tech companies.'),F('IRM','Iron Mountain','','Records storage that is expanding into data centers.')]
+    }
+  }
+};
+const SLEEVE = {low:.10, mid:.15, high:.20};  /* share of a slice that may go into individual stocks */
+const MIN_STOCK_DOLLARS = 25;
+
+</script>
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const KEY = 'riskdial.v3';
+const TODAY = (()=>{ const d=new Date(); return Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()); })();
+const isoOff = days => new Date(TODAY+days*86400000).toISOString().slice(0,10);
+const SAMPLE = [
+  {date:isoOff(-395),amount:4000,src:'School collective'},
+  {date:isoOff(-335),amount:1500,src:'Local car dealership'},
+  {date:isoOff(-255),amount:8000,src:'School collective'},
+  {date:isoOff(-210),amount:750,src:'Sponsored social posts'},
+  {date:isoOff(-120),amount:2500,src:'Sports drink brand'},
+  {date:isoOff(-45),amount:10000,src:'School collective'},
+  {date:isoOff(40),amount:5000,src:'School collective'},
+  {date:isoOff(100),amount:5000,src:'School collective'}
+];
+let rowSeq = 0;
+const withIds = list => list.map(p=>({id:++rowSeq, date:p.date, amount:p.amount, src:p.src||''}));
+const state = {dial:70, amount:10000, years:10, monthly:0, mode:'funds', step:1, current:{}, newCash:0,
+  payments:withIds(SAMPLE), isSample:true, cashNow:20000, spend:800, elig:2, pro:0.1, taxRate:0.25, taxPaid:0, applyAdj:true};
+try{ const s = JSON.parse(localStorage.getItem(KEY)||'null'); if(s){ ['dial','amount','years','monthly'].forEach(k=>{ if(typeof s[k]==='number' && isFinite(s[k])) state[k]=s[k]; }); if(s.mode==='stocks') state.mode='stocks';
+  ['cashNow','spend','elig','pro','taxRate','taxPaid'].forEach(k=>{ if(typeof s[k]==='number' && isFinite(s[k])) state[k]=s[k]; });
+  if(typeof s.applyAdj==='boolean') state.applyAdj=s.applyAdj;
+  if(Array.isArray(s.payments)){ state.payments = withIds(s.payments.filter(p=>p&&typeof p.date==='string')); state.isSample = !!s.isSample; } } }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify({dial:state.dial,amount:state.amount,years:state.years,monthly:state.monthly,mode:state.mode,cashNow:state.cashNow,spend:state.spend,elig:state.elig,pro:state.pro,taxRate:state.taxRate,taxPaid:state.taxPaid,applyAdj:state.applyAdj,isSample:state.isSample,payments:state.payments.map(p=>({date:p.date,amount:p.amount,src:p.src}))})); }catch(e){} }
+
+const nf0 = new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
+const usd = n => (n<0?'\u2212$':'$') + nf0.format(Math.abs(Math.round(n)));
+const pct = (x,d) => { d = d===undefined?1:d; const v=(x*100).toFixed(d); return (x<0?'\u2212':'')+Math.abs(v)+'%'; };
+const spct = x => (x>=0?'+':'\u2212') + Math.abs(x*100).toFixed(1) + '%';
+const sUsd = n => (n>=0?'+':'\u2212') + '$' + nf0.format(Math.abs(Math.round(n)));
+const parseNum = s => { const v = parseFloat(String(s).replace(/[^0-9.]/g,'')); return isFinite(v)?v:0; };
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+const colorVar = a => 'var('+a.color+')';
+const fgVar = a => 'var('+a.color.replace('--c-','--f-')+')';
+
+let M = null, INC = null;
+function model(){
+  const amount = clamp(Math.round(state.amount),100,1e9);
+  const years = clamp(Math.round(state.years),1,40);
+  const monthly = clamp(state.monthly,0,1e6);
+  INC = incomeRisk(state.payments, TODAY, state.elig, state.pro);
+  const dial = state.applyAdj ? adjustedDial(state.dial, INC.score) : state.dial;
+  const pcts = toPercents(interpWeights(dial));
+  return {dial,amount,years,monthly,pcts,st:portfolioStats(pcts),dollars:allocateDollars(amount,pcts),band:bandFor(dial),tier:tierOf(dial)};
+}
+
+/* ---------- gauge & wave ---------- */
+const CX=160, CY=155, R=118, ARC_LEN = Math.PI*R;
+function buildTicks(){
+  let s='';
+  for(let i=0;i<=20;i++){
+    const th = Math.PI*(1-i*5/100), maj = i%5===0, r1 = 135, r2 = maj?149:142;
+    s += '<line class="tick'+(maj?' maj':'')+'" style="stroke:'+hsl(i*5)+'" x1="'+(CX+r1*Math.cos(th)).toFixed(2)+'" y1="'+(CY-r1*Math.sin(th)).toFixed(2)+'" x2="'+(CX+r2*Math.cos(th)).toFixed(2)+'" y2="'+(CY-r2*Math.sin(th)).toFixed(2)+'"/>';
+  }
+  $('#gTicks').innerHTML = s;
+}
+function drawGauge(){
+  document.documentElement.style.setProperty('--dh', hueFor(state.dial));
+  const d = state.dial, th = Math.PI*(1-d/100);
+  $('#gKnob').setAttribute('transform','translate('+(CX+R*Math.cos(th)).toFixed(2)+','+(CY-R*Math.sin(th)).toFixed(2)+')');
+  $('#gArc').setAttribute('stroke-dasharray', (ARC_LEN*d/100).toFixed(2)+' '+ARC_LEN.toFixed(2));
+  $('#gNum').textContent = d;
+  const rg = dialRange(INC ? INC.score : 0), pt = (v,r) => { const a = Math.PI*(1-v/100); return [(CX+r*Math.cos(a)).toFixed(2),(CY-r*Math.sin(a)).toFixed(2)]; };
+  const a = pt(rg.lo,128), b = pt(rg.hi,128), on = state.applyAdj;
+  const gr = $('#gRange'); gr.setAttribute('d','M '+a[0]+' '+a[1]+' A 128 128 0 0 1 '+b[0]+' '+b[1]); gr.style.stroke = hsl(rg.rec); gr.style.display = on?'':'none';
+  const rp = pt(rg.rec,154), ang = 90 - 180*rg.rec/100;
+  const gm = $('#gRec'); gm.setAttribute('transform','translate('+rp[0]+','+rp[1]+') rotate('+(-ang+180)+')'); gm.style.fill = hsl(rg.rec); gm.style.display = on?'':'none';
+  const la = pt(Math.min(rg.lo, rg.rec-22),166), lb = pt(Math.max(rg.hi, rg.rec+22),166);
+  $('#gLabelPath').setAttribute('d','M '+la[0]+' '+la[1]+' A 166 166 0 0 1 '+lb[0]+' '+lb[1]);
+  const gl = $('#gLabel'); gl.style.fill = hsl(rg.rec); gl.style.display = on?'':'none';
+}
+const WAVE_Z = (function(){ const r = mulberry32(777), z=[]; for(let i=0;i<104;i++){ const u1=Math.max(r(),1e-12),u2=r(); z.push(Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2)); } return z; })();
+function drawWave(){
+  const {mu,sigma} = M.st; let v=100, pts=[];
+  for(let i=0;i<=104;i++){
+    if(i>0) v = v*(1+mu/52+sigma/Math.sqrt(52)*WAVE_Z[i-1]);
+    pts.push((i/104*600).toFixed(1)+','+clamp(145-(v-70)/70*135,4,146).toFixed(1));
+  }
+  const base = 145-(100-70)/70*135;
+  $('#wave').innerHTML = '<line x1="0" x2="600" y1="'+base+'" y2="'+base+'" stroke="var(--ink2)" stroke-width="1" stroke-dasharray="2 5" vector-effect="non-scaling-stroke" opacity=".7"/>'+
+    '<polyline points="'+pts.join(' ')+'" fill="none" stroke="var(--dialc)" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>';
+}
+
+/* ---------- step 1 ---------- */
+function horizonNote(){
+  const n = $('#note1'); let msg = '';
+  if(M.years<5 && M.dial>50) msg = 'You plan to leave this for only '+M.years+' year'+(M.years===1?'':'s')+'. At this dial a rough year could cost about '+usd(-M.amount*M.st.bad)+', and a short timeline leaves little time to recover. You can keep this setting; just go in knowing the trade-off.';
+  else if(M.years>=15 && M.dial<=15) msg = 'Over '+M.years+' years, a very low dial may barely keep up with inflation. If you will not need the money for a long time, a higher dial may suit you better.';
+  n.hidden = !msg; n.textContent = msg;
+}
+function renderHero(){
+  drawGauge(); drawWave();
+  const {band,st,amount} = M, g = Math.round(st.growth*100);
+  $('#bandName').textContent = band.name; $('#bandText').textContent = band.text;
+  const rg = dialRange(INC.score);
+  $('#adjLine').innerHTML = (state.applyAdj && state.dial>rg.hi) ? 'Your income range caps this dial at <b>'+rg.hi+'</b>. The portfolio below uses '+rg.hi+'.' : '';
+  $('#useRec').textContent = 'Set dial to '+rg.rec; $('#useRec').hidden = !state.applyAdj || state.dial===rg.rec;
+  $('#fMix').innerHTML = '<b>'+g+'%</b> stocks and real estate, <b>'+(100-g)+'%</b> bonds and cash';
+  $('#fAvg').innerHTML = '<b>'+spct(st.mu)+'</b> a year, about '+sUsd(amount*st.mu)+' on '+usd(amount);
+  if(st.bad>=0) $('#fBad').innerHTML = 'Should still end near <b>'+spct(st.bad)+'</b>, or '+usd(amount*(1+st.bad));
+  else $('#fBad').innerHTML = '<b>'+spct(st.bad)+'</b>, so '+usd(amount)+' could shrink to about '+usd(amount*(1+st.bad));
+  horizonNote();
+  renderDialRange();
+}
+function renderMini(){ $('#miniVal').textContent = (M.dial!==state.dial ? state.dial+' \u2192 '+M.dial : M.dial)+', '+M.band.name; }
+
+/* ---------- step 2: portfolio ---------- */
+function renderPortfolio(){
+  const {pcts,dollars,st,amount,monthly,band} = M;
+  $('#p2dial').textContent = M.dial;
+  $('#p2lede').textContent = band.name+'. Here is where your '+usd(amount)+' goes. Every holding is a low-cost fund that owns hundreds or thousands of companies or bonds, so no single failure can sink you.';
+  let bar = '';
+  ASSETS.forEach((a,i)=>{ if(pcts[i]>0) bar += '<div data-i="'+i+'" style="flex:'+pcts[i]+';background:'+colorVar(a)+';color:'+fgVar(a)+'" title="'+a.name+' '+pcts[i]+'%">'+(pcts[i]>=6?pcts[i]+'%':'')+'</div>'; });
+  let html = '<div class="bar" role="img" aria-label="Allocation: '+ASSETS.map((a,i)=>pcts[i]>0?a.name+' '+pcts[i]+' percent':'').filter(Boolean).join(', ')+'">'+bar+'</div>';
+  [['steady','Steady','Softens the drops'],['growth','Growth','Drives long-term growth']].forEach(([g,title,sub])=>{
+    const idx = ASSETS.map((a,i)=>i).filter(i=>ASSETS[i].group===g && pcts[i]>0);
+    if(!idx.length) return;
+    const sp = idx.reduce((a,i)=>a+pcts[i],0), sd = idx.reduce((a,i)=>a+dollars[i],0);
+    html += '<div class="group"><div class="grouphead"><h3>'+title+'<span class="sub">'+sub+'</span></h3><span class="tot">'+sp+'% \u00b7 '+usd(sd)+'</span></div>';
+    idx.forEach(i=>{
+      const a = ASSETS[i];
+      html += '<div class="hold" data-i="'+i+'"><div class="nm"><span class="sw" style="background:'+colorVar(a)+'"></span>'+a.name+'</div>'+
+        '<div class="amt"><div class="d">'+usd(dollars[i])+'</div><div class="p">'+pcts[i]+'% of the total</div></div>'+
+        '<div class="ds">'+a.what+'</div><div class="fu">Fund type: '+a.funds+'</div></div>';
+    });
+    html += '</div>';
+  });
+  const feeUsd = amount*st.fee;
+  const steps = [
+    ['Open the right account.','If you are under 18, a parent or guardian opens a custodial brokerage account with you. Adults can use a regular brokerage account, or an IRA if this is retirement money. Taxes differ by account type, so check which fits you.'],
+    ['Move in your '+usd(amount)+'.','Transfer the money into the account and let it settle.'],
+    ['Buy each holding in the amounts above.','The next tab names specific funds for every slice. '+(amount<1000?'With a small amount, pick a brokerage that sells fractional shares so you can buy exact dollar amounts.':'If your brokerage does not allow fractional shares, round to the nearest whole share.')],
+  ];
+  if(monthly>0) steps.push(['Automate '+usd(monthly)+' a month.','Set up an automatic deposit and split each one by the percentages above to stay on target with no extra work.']);
+  steps.push(['Write down your rule for bad years.',(st.bad<0?'At this dial a rough year could take your balance to about '+usd(amount*(1+st.bad))+'. ':'Even this calm mix can have a down year, and inflation can quietly eat into what your money buys. ')+'Decide now what you will do. The plan that works best for most people: nothing, and check the portfolio once a year.']);
+  steps.push(['Check in once a year.','Use the Check-in tab. It tells you exactly what to buy or sell, if anything.']);
+  html += '<div class="group"><div class="grouphead"><h3>How to set it up</h3></div><ol class="how">'+steps.map(s=>'<li><div><b>'+s[0]+'</b><span class="muted">'+s[1]+'</span></div></li>').join('')+'</ol></div>';
+  html += '<p class="small muted" style="margin-top:28px">Estimated fund fees for this mix: about '+(st.fee*100).toFixed(2)+'% a year, or '+(feeUsd<1?'under $1':'roughly '+usd(feeUsd))+' on '+usd(amount)+'.</p>';
+  $('#p2body').innerHTML = html;
+}
+
+/* ---------- step 3: picks ---------- */
+function feeTxt(f){ return (f===null||f===undefined)?'No fund fee':'About '+(f*100).toFixed(2)+'% a year'; }
+function pickRow(p, role, amt, extraCls){
+  return '<div class="pk '+(extraCls||'')+'"><div class="tkc"><div class="tk">'+p.t+'</div><div class="role">'+role+'</div></div>'+
+    '<div class="bd"><div class="n">'+p.n+'</div><div class="w">'+p.why+'</div></div>'+
+    '<div class="rt">'+(amt!==null?'<div class="am">'+usd(amt)+'</div>':'')+(p.fee!==''?'<div class="fee">'+feeTxt(p.fee)+'</div>':'')+'</div></div>';
+}
+function renderPicks(){
+  const {pcts,dollars,amount,tier,band} = M;
+  $('#p3dial').textContent = M.dial;
+  $('#p3lede').textContent = 'Specific funds and stocks for each slice of your '+usd(amount)+', matched to a '+TIER_WORD[tier]+' dial. You only need one pick per slice.';
+  const stocksOn = state.mode==='stocks';
+  let html = '<div class="seg" role="group" aria-label="Choose a route"><button data-mode="funds" aria-pressed="'+(!stocksOn)+'">Funds only</button><button data-mode="stocks" aria-pressed="'+stocksOn+'">Funds plus a few stocks</button></div>';
+  html += '<p class="small muted" style="margin-top:12px;max-width:62ch">'+(stocksOn
+    ? 'Hands-on route: up to '+Math.round(SLEEVE[tier]*100)+'% of your US stock and real estate slices goes into three individual companies; the rest stays in the fund. Single stocks can fall much further than a fund, and even a great company can lose most of its value.'
+    : 'The simple route: one low-cost fund per slice. The ten largest US companies already make up over a third of the S&P 500, so index funds give you big names without betting on any one.')+'</p>';
+  const list = [];
+  ASSETS.forEach((a,i)=>{
+    if(pcts[i]<=0) return;
+    const P = PICKS[a.id], d = dollars[i];
+    const core = P.core[tier], alts = P.alts[tier], tilt = P.tilt?P.tilt[tier]:null;
+    let stocks = (stocksOn && P.stocks) ? P.stocks[tier] : null, coreAmt = d, sleeveMsg = '';
+    if(stocks){
+      const sleeve = Math.round(d*SLEEVE[tier]), each = Math.floor(sleeve/3);
+      if(each>=MIN_STOCK_DOLLARS){ coreAmt = d-each*3; stocks = stocks.map(s=>({s,amt:each})); sleeveMsg = usd(each*3)+' of this slice ('+usd(each)+' each) goes into three stocks, and '+usd(coreAmt)+' stays in the fund.'; }
+      else { sleeveMsg = 'This slice is too small to split into three stocks (about '+usd(MIN_STOCK_DOLLARS)+' each is a sensible minimum), so keep it all in the fund.'; stocks = null; }
+    }
+    html += '<section class="blk"><div class="bh"><div class="nm"><span class="sw" style="background:'+colorVar(a)+'"></span>'+a.name+'</div><div class="bt"><span class="d">'+usd(d)+'</span>'+pcts[i]+'%</div></div>';
+    html += '<p class="fit">'+P.fit[tier]+'</p>';
+    html += pickRow(core,'Core pick',coreAmt);
+    list.push({t:core.t,n:core.n,a:coreAmt});
+    if(stocksOn && P.stocks){
+      if(stocks){ stocks.forEach(x=>{ html += pickRow(x.s,'Stock',x.amt); list.push({t:x.s.t,n:x.s.n,a:x.amt}); }); }
+      html += '<div class="sleeve">'+sleeveMsg+'</div>';
+    }
+    let more = '';
+    alts.forEach(x=>{ more += pickRow(x,'Alternative',null,'opt'); });
+    if(tilt){ more += pickRow(tilt,'Optional tilt',null,'opt')+'<div class="small muted" style="padding:10px 0 4px">Optional: swap up to a third of this slice, about '+usd(d/3)+', into '+tilt.t+' for a '+TIER_WORD[tier]+' lean. '+((P.tiltAlt&&P.tiltAlt[tier])||'')+'</div>'; }
+    html += '<details><summary>Other options for this slice</summary>'+more+'</details></section>';
+  });
+  html += '<div class="group"><div class="grouphead"><h3>Your order in one place</h3><span class="tot">'+(stocksOn?'Funds plus stocks':'Funds only')+'</span></div><table class="list"><thead><tr><th>Ticker</th><th>Name</th><th>Buy</th></tr></thead><tbody>'+
+    list.map(x=>'<tr><td class="t">'+x.t+'</td><td>'+x.n+'</td><td>'+usd(x.a)+'</td></tr>').join('')+
+    '<tr class="tot"><td></td><td>Total</td><td>'+usd(list.reduce((s,x)=>s+x.a,0))+'</td></tr></tbody></table>'+
+    '<p class="small muted" style="margin-top:14px">Savings accounts and money market funds have no ticker; if you choose one for the cash slice, put that amount there instead.</p></div>';
+  html += '<details class="as"><summary>How these were chosen</summary><p class="small muted" style="margin-top:10px;max-width:70ch">Funds: large, liquid, broadly diversified index funds with fees well under 0.20%, from Vanguard, Schwab and iShares. At lower dials the picks lean toward shorter bonds and steadier, dividend-paying or value-oriented holdings; at higher dials they lean toward growth. Stocks: widely known large companies, picked by profile (steady dividend payers, large diversified leaders, or fast-growing leaders), not by forecast. Nothing here predicts which holding will do best. Fees are approximate and checked against 2026 provider data; they change, so confirm before buying.</p></details>';
+  $('#p3body').innerHTML = html;
+}
+
+/* ---------- step 4: outlook ---------- */
+let Zcache = null;
+function getZ(){ if(!Zcache) Zcache = makeShocks(1000,40,20260930); return Zcache; }
+function niceTicks(max,n){
+  const raw = max/n, mag = Math.pow(10,Math.floor(Math.log10(raw))), f = raw/mag;
+  const step = (f<=1?1:f<=2?2:f<=5?5:10)*mag, out=[0]; while(out[out.length-1] < max) out.push(out[out.length-1]+step); return out;
+}
+function compact(n){ if(n>=1e6) return '$'+(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M'; if(n>=1e3) return '$'+(n/1e3).toFixed(n>=1e4?0:1).replace(/\.0$/,'')+'k'; return '$'+Math.round(n); }
+function renderOutlook(){
+  const {pcts,st,amount,years,monthly} = M;
+  const sim = simulate(st.mu, st.sigma, amount, monthly*12, years, getZ());
+  const p10 = sim.p10[years], p50 = sim.p50[years], p90 = sim.p90[years];
+  const inv = sim.totalInvested, real50 = p50/Math.pow(1+INFLATION,years);
+  let html = '<p class="headline">After '+years+' year'+(years===1?'':'s')+', your money most likely lands between <b>'+usd(p10)+'</b> and <b>'+usd(p90)+'</b>, with a middle estimate near <b>'+usd(p50)+'</b>.</p>';
+  html += '<p class="muted small" style="margin-top:14px;max-width:70ch">'+(monthly>0?'Based on '+usd(amount)+' to start plus '+usd(monthly)+' a month. ':'Based on '+usd(amount)+' left alone. ')+'The range covers 8 of 10 simulated outcomes: 1 in 10 did worse than the low end and 1 in 10 did better than the high end.</p>';
+  html += '<div class="chartBox"><svg id="fan" viewBox="0 0 640 300" role="img" aria-label="Simulated range of outcomes over time"></svg><div class="legend"><span><i class="band" style="background:var(--dialc);opacity:.3"></i>Likely range</span><span><i style="border-color:var(--dialc)"></i>Middle estimate</span><span><i style="border-color:var(--ink2);border-top-style:dashed"></i>Money you put in</span></div><div class="readout" id="readout" aria-live="polite"></div></div>';
+  html += '<div class="stats">'+
+    '<div class="stat"><div class="k">Chance you end with more than you put in</div><div class="v">'+Math.round(sim.probAbove*100)+'%</div></div>'+
+    '<div class="stat"><div class="k">Middle estimate in today\'s dollars</div><div class="v">'+usd(real50)+'</div><div class="small muted">After '+(INFLATION*100).toFixed(1)+'% yearly inflation</div></div>'+
+    '<div class="stat"><div class="k">Total you put in</div><div class="v">'+usd(inv)+'</div></div></div>';
+  html += '<div class="group"><div class="grouphead"><h3>If markets turn ugly</h3></div><p class="muted small" style="margin-top:12px">How this exact mix would have fared in a bad year, applied to '+usd(amount)+'.</p><div class="stress">';
+  STRESS.forEach(s=>{
+    const r = stressReturn(pcts,s), dl = amount*r;
+    const rec = r<0 ? (st.geo>0 ? Math.log(1/(1+r))/Math.log(1+st.geo) : null) : 0;
+    html += '<div class="srow"><div class="top2"><span><b>'+s.name+'</b><br><span class="muted small">'+s.note+'</span></span><span class="r">'+spct(r)+' <span class="small muted" style="font-family:var(--sans)">('+sUsd(dl)+')</span></span></div>'+
+      '<div class="meter"><div style="width:'+Math.min(100,Math.abs(r)/0.5*100).toFixed(1)+'%;background:'+(r<0?hsl(50+Math.min(50,Math.abs(r)*125)):'var(--calm)')+'"></div></div>'+
+      (r<0?'<div class="small muted" style="margin-top:8px">'+(rec===null?'Recovery time cannot be estimated.':'Recovering at the expected growth rate would take roughly '+(rec<1?'under a year':rec.toFixed(1)+' years')+'.')+'</div>':'')+'</div>';
+  });
+  html += '</div></div>';
+  const rows = ASSETS.map(a=>'<tr><td>'+a.name+'</td><td>'+pct(a.ret)+'</td><td>'+pct(a.vol)+'</td><td>'+pct(a.er,2)+'</td></tr>').join('');
+  html += '<details class="as"><summary>Assumptions behind these numbers</summary><div class="scroll"><table class="as"><tr><th>Holding</th><th>Expected return</th><th>Volatility</th><th>Fund fee</th></tr>'+rows+'</table></div>'+
+    '<p class="small muted" style="margin-top:12px;max-width:70ch">Figures are round-number, long-run style estimates chosen for illustration, not forecasts. Your mix averages '+spct(st.mu)+' a year after fees with '+pct(st.sigma)+' volatility. Simulation: 1,000 repeatable random paths with normally distributed, independent yearly returns, a floor of \u221250% per year, contributions added at year end, and '+(INFLATION*100).toFixed(1)+'% inflation. Real markets have fatter tails, so treat the low end as optimistic. Taxes are not modeled. Stress-test returns are rounded approximations of calendar-year results for broad index proxies; verify with an index provider before relying on them.</p></details>';
+  $('#p4body').innerHTML = html;
+  drawFan(sim, years);
+}
+function drawFan(sim, years){
+  const W=640,H=300,l=58,r=14,t=12,b=30, pw=W-l-r, ph=H-t-b;
+  const maxV = Math.max(sim.p90[years], sim.invested[years])*1.06;
+  const ticks = niceTicks(maxV,5), ymax = ticks[ticks.length-1];
+  const X = i => l + i/years*pw, Y = v => t + ph - v/ymax*ph;
+  let s = '<g class="axis">';
+  ticks.forEach(v=>{ s += '<line x1="'+l+'" x2="'+(W-r)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text x="'+(l-10)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+compact(v)+'</text>'; });
+  const xt = years<=10?1:years<=20?2:5;
+  for(let i=0;i<=years;i+=xt) s += '<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle">'+i+'</text>';
+  s += '</g>';
+  let up='', dn='';
+  for(let i=0;i<=years;i++) up += (i?'L':'M')+X(i).toFixed(1)+','+Y(sim.p90[i]).toFixed(1);
+  for(let i=years;i>=0;i--) dn += 'L'+X(i).toFixed(1)+','+Y(sim.p10[i]).toFixed(1);
+  s += '<path d="'+up+dn+'Z" fill="var(--dialc)" opacity=".16"/>';
+  let mid='', inv='';
+  for(let i=0;i<=years;i++){ mid += (i?'L':'M')+X(i).toFixed(1)+','+Y(sim.p50[i]).toFixed(1); inv += (i?'L':'M')+X(i).toFixed(1)+','+Y(sim.invested[i]).toFixed(1); }
+  s += '<path d="'+inv+'" fill="none" stroke="var(--ink2)" stroke-width="1.5" stroke-dasharray="5 5"/>';
+  s += '<path d="'+mid+'" fill="none" stroke="var(--dialc)" stroke-width="2.5" stroke-linejoin="round"/>';
+  s += '<line id="cur" x1="0" x2="0" y1="'+t+'" y2="'+(t+ph)+'" stroke="var(--dialc)" stroke-width="1" style="display:none"/><circle id="curDot" r="5" fill="var(--dialc)" stroke="var(--paper)" stroke-width="2" style="display:none"/>';
+  const svg = $('#fan'); svg.innerHTML = s;
+  const ro = $('#readout');
+  const show = i => { ro.innerHTML = '<b>Year '+i+':</b> low end '+usd(sim.p10[i])+', middle '+usd(sim.p50[i])+', high end '+usd(sim.p90[i])+', you put in '+usd(sim.invested[i]); };
+  show(years);
+  const move = e => {
+    const rect = svg.getBoundingClientRect(); const px = (e.clientX-rect.left)/rect.width*W;
+    const i = clamp(Math.round((px-l)/pw*years),0,years);
+    const c = $('#cur'); c.setAttribute('x1',X(i)); c.setAttribute('x2',X(i)); c.style.display='block'; const dot = $('#curDot'); dot.setAttribute('cx',X(i)); dot.setAttribute('cy',Y(sim.p50[i])); dot.style.display='block'; show(i);
+  };
+  svg.addEventListener('pointermove',move); svg.addEventListener('pointerdown',move);
+  svg.addEventListener('pointerleave',()=>{ $('#cur').style.display='none'; $('#curDot').style.display='none'; show(years); });
+}
+
+/* ---------- step 6: yearly check-in ---------- */
+/* Once a year the athlete answers three questions. We re-score income risk with the new answers
+   (biggest-chunk factor kept from the payment history) and show how the recommended dial range moved. */
+const ck = {elig:null, pro:null, signed:null};
+function ckDefaults(){
+  if(ck.elig===null) ck.elig = Math.max(0, state.elig-1);
+  if(ck.pro===null) ck.pro = state.pro;
+  if(ck.signed===null) ck.signed = INC.S12;
+}
+function ckScore(){
+  const f = {runway:1-Math.min(ck.elig,4)/4, pro:1-ck.pro, chunk:INC.f.chunk,
+    signed: INC.R12>0 ? 1-Math.min(1, ck.signed/INC.R12) : (ck.signed>0?0:1)};
+  let sc = 0; for(const k in INCOME_WEIGHTS) sc += INCOME_WEIGHTS[k]*f[k];
+  return Math.round(sc);
+}
+function renderTrack(){
+  ckDefaults();
+  const opt = (v,l,cur) => '<option value="'+v+'"'+(String(cur)===String(v)?' selected':'')+'>'+l+'</option>';
+  let html = '<p class="lede">Once a year, answer three questions about your NIL career. We will tell you if your risk dial should change.</p>';
+  html += '<div class="group"><div class="grouphead"><h3>What changed this year?</h3></div><div class="ckQ">'+
+    '<div class="field"><label for="ckElig">Years of eligibility left now</label><select id="ckElig">'+opt(0,'Final season',ck.elig)+opt(1,'1 year',ck.elig)+opt(2,'2 years',ck.elig)+opt(3,'3 years',ck.elig)+opt(4,'4 or more',ck.elig)+'</select></div>'+
+    '<div class="field"><label for="ckPro">Chance of a pro career now</label><select id="ckPro">'+opt(0,'Not planning on it',ck.pro)+opt(0.1,'Long shot',ck.pro)+opt(0.35,'Real chance',ck.pro)+opt(0.7,'Likely',ck.pro)+'</select></div>'+
+    '<div class="field"><label for="ckSigned">NIL money signed for next year</label><input type="text" id="ckSigned" inputmode="decimal" value="'+nf0.format(ck.signed)+'"></div>'+
+    '</div></div>';
+  html += '<div class="group"><div class="grouphead"><h3>Your dial, then and now</h3></div><div id="ckResult"></div></div>';
+  html += '<div class="group"><div class="grouphead"><h3>Two habits that matter most</h3></div><ol class="how">'+
+    '<li><div><b>Put new NIL money in with the same mix.</b><span class="muted">Split each deposit by your portfolio percentages. If your investing app offers automatic rebalancing, turn it on and it keeps your mix on plan for you.</span></div></li>'+
+    '<li><div><b>Do not sell when prices drop.</b><span class="muted">A drop only becomes a real loss if you sell. Markets have always recovered given time.</span></div></li></ol></div>';
+  $('#p5body').innerHTML = html;
+  updateTrack();
+}
+function updateTrack(){
+  const out = $('#ckResult'); if(!out) return;
+  const was = dialRange(INC.score), sc = ckScore(), now = dialRange(sc), d = state.dial;
+  const box = (k,score,rg,cls) => '<div class="ckBox'+(cls?' '+cls:'')+'"><div class="k">'+k+'</div><div class="n" style="color:'+hsl(rg.rec)+'">'+rg.lo+'–'+rg.hi+'</div><div class="d">Suggested '+rg.rec+' · income risk '+score+'</div></div>';
+  let msg, target;
+  if(d>now.hi){ msg = 'Lower your dial from '+d+' to '+now.rec+'.'; target = now.rec; }
+  else if(d<now.lo){ msg = 'You can raise your dial to '+now.rec+' if you like.'; target = now.rec; }
+  else { msg = 'Keep your dial at '+d+'. It is still in your range.'; target = null; }
+  const why = sc>INC.score ? 'Your NIL income got less certain, so your range moved down.' : sc<INC.score ? 'Your NIL income got steadier, so your range moved up.' : 'Your NIL income looks about as steady as before.';
+  out.innerHTML = '<div class="ckCompare">'+box('Last year',INC.score,was)+
+    '<div class="xarrow"><svg viewBox="0 0 46 20" aria-hidden="true"><path d="M2 10 H40 M32 3 L41 10 L32 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
+    box('This year',sc,now,'now')+'</div>'+
+    '<p class="muted" style="margin-top:16px">'+why+'</p><p class="ckDo">'+msg+'</p>'+
+    (target!==null?'<div class="row2" style="margin-top:16px"><button class="btn" id="ckApply">Set my dial to '+target+'</button></div>':'');
+}
+
+/* ---------- step 1: income ---------- */
+function payStatus(p){
+  const t = parseISO(p.date), a = +p.amount||0;
+  if(t===null) return '<span class="bad">Add a date</span>';
+  if(a<=0) return '<span class="bad">Add an amount</span>';
+  return t<=TODAY ? '<span class="rec">Received</span>' : '<span class="sig">Signed</span>';
+}
+function renderPayRows(){
+  const rows = state.payments.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  $('#payRows').innerHTML = rows.length ? rows.map(p=>
+    '<tr data-id="'+p.id+'"><td><input type="date" id="pd-'+p.id+'" data-k="date" value="'+(p.date||'')+'" aria-label="Payment date"></td>'+
+    '<td><input type="text" id="pa-'+p.id+'" data-k="amount" inputmode="decimal" value="'+(p.amount?nf0.format(p.amount):'')+'" placeholder="$0" aria-label="Payment amount"></td>'+
+    '<td><input type="text" id="ps-'+p.id+'" data-k="src" value="'+String(p.src||'').replace(/"/g,'&quot;')+'" placeholder="Brand or collective" aria-label="Who paid"></td>'+
+    '<td class="st">'+payStatus(p)+'</td><td><button data-del="'+p.id+'" aria-label="Remove payment">Remove</button></td></tr>').join('')
+    : '<tr><td colspan="5" class="muted small" style="padding:16px 0">No payments yet. Add your first one, with past dates for money received and future dates for deals you have signed.</td></tr>';
+}
+function rangeScale(rg){
+  const pos = v => Math.max(0,Math.min(100,v));
+  return '<div class="rscale" role="img" aria-label="Recommended dial range '+rg.lo+' to '+rg.hi+', suggested '+rg.rec+', your dial '+state.dial+'">'+
+    '<div class="dim" style="left:0;width:'+pos(rg.lo)+'%"></div><div class="dim" style="left:'+pos(rg.hi)+'%;right:0"></div>'+
+    '<div class="win" style="left:'+pos(rg.lo)+'%;width:'+(pos(rg.hi)-pos(rg.lo))+'%"></div>'+
+    '<div class="rec" style="left:'+rg.rec+'%;color:'+hsl(rg.rec)+'">'+rg.rec+'</div>'+
+    '<div class="you" style="left:'+state.dial+'%">\u25B2 your dial '+state.dial+'</div></div>'+
+    '<div class="rticks"><span style="left:0">0</span><span style="left:25%">25</span><span style="left:50%">50</span><span style="left:75%">75</span><span style="left:100%">100</span></div>';
+}
+function renderDialRange(){
+  const rg = dialRange(INC.score), opt = (k,d) => '<button data-set="'+d+'" aria-pressed="'+(state.dial===d)+'">'+k+' <b style="color:'+(state.dial===d?'inherit':hsl(d))+'">'+d+'</b></button>';
+  $('#dialRange').innerHTML = '<div class="seg rseg" role="group" aria-label="Recommended dial for your income">'+opt('Most careful',rg.lo)+opt('Suggested',rg.rec)+opt('Most to take',rg.hi)+'</div>';
+}
+let PLAN = null, WHY_OPEN = false;
+function renderIncome(){
+  M = model();
+  const I = INC, w = INCOME_WEIGHTS, f = I.f;
+  $('#sampleNote').hidden = !state.isSample;
+  $$('#payRows tr[data-id]').forEach(tr=>{ const p = state.payments.find(x=>x.id===+tr.dataset.id); if(p) tr.querySelector('.st').innerHTML = payStatus(p); });
+  const ey = state.elig, proLbl = $('#pro').selectedOptions[0] ? $('#pro').selectedOptions[0].textContent : '';
+  const rows = [
+    ['Eligibility left', ey===0?'This is your final season, so the window could close soon.':(ey>=4?'4 or more years left in your earning window.':ey+' year'+(ey===1?'':'s')+' left in your earning window.'), f.runway, w.runway],
+    ['Pro prospects', proLbl+'. A pro career would extend your earnings past college.', f.pro, w.pro],
+    ['Biggest chunk', I.R12>0 ? 'Your biggest payment, '+usd(I.biggest)+', was '+pct(f.chunk,0)+' of the '+usd(I.R12)+' you received in the last 12 months.' : 'No payments received in the last 12 months.', f.chunk, w.chunk],
+    ['Signed ahead', I.R12>0 ? usd(I.S12)+' signed for the next 12 months, '+pct(Math.min(1,I.S12/I.R12),0)+' of what you earned in the last 12.' : (I.S12>0?usd(I.S12)+' signed for the next 12 months.':'Nothing signed for the next 12 months.'), f.signed, w.signed]
+  ];
+  const band = riskBand(I.score);
+  const rg = dialRange(I.score);
+  const mg = v => { const a = Math.PI*v/100; return [(60-48*Math.cos(a)).toFixed(1),(60-48*Math.sin(a)).toFixed(1)]; };
+  const g0 = mg(0), g1 = mg(100), gl = mg(rg.lo), gh = mg(rg.hi), gr = mg(rg.rec);
+  const miniGauge = '<svg viewBox="0 0 120 68" aria-hidden="true"><path d="M '+g0[0]+' '+g0[1]+' A 48 48 0 0 1 '+g1[0]+' '+g1[1]+'" fill="none" stroke="var(--soft2)" stroke-width="8" stroke-linecap="round"/>'+
+    '<path d="M '+gl[0]+' '+gl[1]+' A 48 48 0 0 1 '+gh[0]+' '+gh[1]+'" fill="none" stroke="'+hsl(rg.rec)+'" stroke-width="8"/>'+
+    '<line x1="60" y1="60" x2="'+gr[0]+'" y2="'+gr[1]+'" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/><circle cx="60" cy="60" r="4" fill="var(--ink)"/></svg>';
+  let html = '<div class="xlate">'+
+    '<div class="xcard inc"><div class="lab">Income risk</div><div class="sub">How uncertain your NIL money is</div>'+
+      '<div class="big" style="color:'+hsl(I.score)+'">'+I.score+'<small>out of 100</small></div>'+
+      '<span class="tag" style="color:'+hsl(I.score)+'">'+band+'</span>'+
+      '<div class="imeter"><div style="width:'+I.score+'%;background:'+hsl(I.score)+'"></div></div><div class="iends"><span>Steady</span><span>Very uncertain</span></div></div>'+
+    '<div class="xarrow"><svg viewBox="0 0 46 20" aria-hidden="true"><path d="M2 10 H40 M32 3 L41 10 L32 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>translates<br>to</span></div>'+
+    '<div class="xcard dial"><div class="lab">Recommended risk dial</div><div class="sub">How much investment risk to take</div>'+
+      '<div class="row"><div class="big" style="color:'+hsl(rg.rec)+'">'+rg.rec+'</div>'+miniGauge+'</div>'+
+      '<span class="tag" style="color:'+hsl(rg.rec)+'">'+bandFor(rg.rec).name+'</span>'+
+      '<div class="rng">Range <b>'+rg.lo+'–'+rg.hi+'</b> on the risk dial</div></div>'+
+    '</div>';
+  html += '<p class="muted" style="max-width:66ch;margin-top:18px">'+(I.score<34?'Your income looks fairly dependable, so you can take on more investment risk.':I.score<67?'Your income is real but uneven, so take a bit less investment risk than you otherwise would.':'Your income could shrink or stop with little warning, so keep investments on the calm side.')+' The higher your income risk, the lower your dial should go.</p>';
+  html += '<details class="why"'+(WHY_OPEN?' open':'')+'><summary>How we got income risk '+I.score+'</summary><div class="stress" style="margin-top:8px">'+rows.map(r=>
+    '<div class="srow"><div class="top2"><span><b>'+r[0]+'</b><br><span class="muted small">'+r[1]+'</span></span><span class="r">+'+Math.round(r[2]*r[3])+' <span class="small muted" style="font-family:var(--sans)">of '+r[3]+'</span></span></div><div class="meter"><div style="width:'+(r[2]*100).toFixed(1)+'%;background:'+hsl(r[2]*100)+'"></div></div></div>').join('')+
+    '<p class="small muted">Points add up to the score: '+rows.map(r=>Math.round(r[2]*r[3])).join(' + ')+' = '+I.score+'.</p></div></details>';
+  $('#riskOut').innerHTML = html;
+  $('#riskOut details.why').addEventListener('toggle',e=>{ WHY_OPEN = e.target.open; });
+  const mix = d => { const p = toPercents(interpWeights(d)), g = p.reduce((a,x,i)=>a+(ASSETS[i].group==='growth'?x:0),0); return g+'% stocks and real estate'; };
+  const card = (k,d,cls) => { const b = bandFor(d); return '<div class="rcard'+(cls?' '+cls:'')+'"><div class="k">'+k+'</div><div class="n" style="color:'+hsl(d)+'">'+d+'</div><div class="bn">'+b.name+'</div><p>'+mix(d)+'. '+b.text+'</p></div>'; };
+  let rh = '<p class="lab-sm" style="margin-top:40px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Your range on the risk dial</p>';
+  rh += rangeScale(rg);
+  rh += '<div class="rcards">'+card('Most careful',rg.lo)+card('Suggested',rg.rec,'mid')+card('Most you should take',rg.hi)+'</div>';
+  rh += '<div class="row2" style="margin-top:22px"><button class="btn" id="setRec">Use dial '+rg.rec+'</button><span class="small muted" style="max-width:46ch">'+(state.dial>rg.hi?'Your current dial of '+state.dial+' is above this range. The portfolio will use '+rg.hi+' unless you turn the range off on the Dial step.':state.dial<rg.lo?'Your current dial of '+state.dial+' is below the range. That is more careful than you need to be, which is fine.':'Your current dial of '+state.dial+' is inside the range.')+'</span></div>';
+  $('#rangeOut').innerHTML = rh;
+
+  const tax = taxReserve(state.payments, TODAY, state.taxRate, state.taxPaid);
+  const months = cushionMonths(I.score), cushion = Math.round(months*state.spend);
+  const cash = state.cashNow, taxHold = Math.min(cash, Math.round(tax.owed)), cushHold = Math.min(cash-taxHold, cushion), invest = Math.max(0, cash-taxHold-cushHold);
+  PLAN = {invest};
+  let fl = '<p class="muted" style="max-width:62ch">Of the '+usd(cash)+' you have now:</p>';
+  const segs = [['Taxes',taxHold,'var(--tax)','var(--on-fill)'],['Cushion',cushHold,'var(--cush)','var(--on-fill)'],['Invest',invest,hsl(adjustedDial(state.dial,I.score)),'var(--paper)']].filter(x=>x[1]>0);
+  if(cash>0) fl += '<div class="flow" role="img" aria-label="'+segs.map(x=>x[0]+' '+usd(x[1])).join(', ')+'">'+segs.map(x=>'<div title="'+x[0]+' '+usd(x[1])+'" style="flex:'+x[1]+';background:'+x[2]+';color:'+x[3]+'">'+(x[1]/cash>=.12?x[0]:'')+'</div>').join('')+'</div>';
+  fl += '<div class="facts" style="margin-top:8px">'+
+    '<div class="fact"><div class="k">Set aside for taxes</div><div class="v"><b>'+usd(taxHold)+'</b> &nbsp;'+pct(state.taxRate,0)+' of the '+usd(tax.ytd)+' received this year'+(state.taxPaid>0?', minus '+usd(state.taxPaid)+' already paid':'')+'. Keep it in savings until you file.</div></div>'+
+    '<div class="fact"><div class="k">Cash cushion</div><div class="v"><b>'+usd(cushHold)+'</b> &nbsp;'+months.toFixed(1)+' months of your '+usd(state.spend)+' monthly costs'+(cushHold<cushion?', short of the '+usd(cushion)+' target':'')+'. Riskier income means a bigger cushion.</div></div>'+
+    '<div class="fact"><div class="k">Ready to invest</div><div class="v"><b>'+usd(invest)+'</b> &nbsp;'+(invest>0?'Invested at dial '+adjustedDial(state.dial,I.score)+(adjustedDial(state.dial,I.score)<state.dial?', capped from your '+state.dial:'')+'.':'Build the tax set-aside and cushion first, then invest what comes in after.')+'</div></div></div>';
+  $('#flowOut').innerHTML = fl;
+  $('#toDial').textContent = invest>=100 ? 'Invest '+usd(invest)+' →' : 'Go to the dial →';
+
+  $('#howOut').innerHTML = '<p class="small muted" style="margin-top:16px;max-width:70ch">NIL money comes in chunks rather than steady pay, so the score looks at the chunks themselves and at how long the earning window may last. Each factor runs from 0 (steady) to 1 (risky) and is weighted; the weights add up to 100.</p>'+
+    '<div class="formula">eligibility  = 1 − years left / 4          weight '+w.runway+'\npro          = 1 − chance of pro career        weight '+w.pro+'\nbiggest chunk = largest payment / last 12 months received   weight '+w.chunk+'\nsigned ahead = 1 − (signed next 12 months / received last 12 months), capped 0–1   weight '+w.signed+'\n\nscore    = sum of factor × weight\ncushion  = '+CUSHION_MIN+' + '+(CUSHION_MAX-CUSHION_MIN)+' × score/100 months of costs\nrange top    = 100 − '+RANGE_TOP_CUT+' × score\nrange bottom = top − '+RANGE_WIDTH+'   (suggested = middle)\nused dial    = your dial, capped at the range top\ntaxes    = rate × received since Jan 1 − already paid</div>'+
+    '<p class="small muted" style="margin-top:12px;max-width:70ch">Why cap the dial: your future earnings are part of your wealth. When they are uncertain, a calmer portfolio keeps a bad market year from landing at the same time as a dry spell in deals. This is the human-capital idea used in financial planning. The weights and limits are judgment calls, not estimates from data.</p>';
+}
+function bindIncomeField(id,key,lo,hi,asPct){
+  const el = $(id);
+  el.value = asPct ? String(Math.round(state[key]*100)) : nf0.format(state[key]);
+  el.addEventListener('input',()=>{ const v = clamp(parseNum(el.value),lo,hi); state[key] = asPct ? v/100 : v; renderIncome(); renderHero(); save(); });
+  el.addEventListener('blur',()=>{ el.value = asPct ? String(Math.round(state[key]*100)) : nf0.format(state[key]); });
+}
+function initIncome(){
+  renderPayRows();
+  bindIncomeField('#cashNow','cashNow',0,1e9);
+  bindIncomeField('#spend','spend',0,1e6);
+  bindIncomeField('#taxRate','taxRate',0,60,true);
+  bindIncomeField('#taxPaid','taxPaid',0,1e9);
+  $('#elig').value = String(state.elig); $('#pro').value = String(state.pro);
+  $('#elig').addEventListener('change',e=>{ state.elig = +e.target.value; renderIncome(); renderHero(); save(); });
+  $('#pro').addEventListener('change',e=>{ state.pro = +e.target.value; renderIncome(); renderHero(); save(); });
+  const tb = $('#payRows');
+  tb.addEventListener('input',e=>{
+    const tr = e.target.closest('tr[data-id]'); if(!tr) return;
+    const p = state.payments.find(x=>x.id===+tr.dataset.id); if(!p) return;
+    const k = e.target.dataset.k; p[k] = k==='amount' ? parseNum(e.target.value) : e.target.value;
+    state.isSample = false; state.current = {}; renderIncome(); renderHero(); save();
+  });
+  tb.addEventListener('focusout',e=>{ if(e.target.dataset.k==='amount'){ const v = parseNum(e.target.value); e.target.value = v?nf0.format(v):''; } });
+  tb.addEventListener('click',e=>{ const b = e.target.closest('[data-del]'); if(!b) return; state.payments = state.payments.filter(x=>x.id!==+b.dataset.del); state.isSample=false; renderPayRows(); renderIncome(); renderHero(); save(); });
+  $('#addPay').addEventListener('click',()=>{ const p = {id:++rowSeq,date:isoOff(0),amount:0,src:''}; state.payments.push(p); state.isSample=false; renderPayRows(); renderIncome(); save(); const el = $('#pa-'+p.id); if(el) el.focus(); });
+  $('#clearPay').addEventListener('click',()=>{ state.payments = []; state.isSample=false; renderPayRows(); renderIncome(); renderHero(); save(); });
+  $('#toDial').addEventListener('click',()=>{ if(PLAN && PLAN.invest>=100){ state.amount = PLAN.invest; $('#amount').value = nf0.format(PLAN.invest); $('#eAmount').textContent=''; state.current = {}; } M = model(); renderHero(); renderMini(); save(); setStep(2); });
+  $('#rangeOut').addEventListener('click',e=>{ if(e.target.id==='setRec'){ setDial(dialRange(INC.score).rec); if(PLAN && PLAN.invest>=100){ state.amount = PLAN.invest; $('#amount').value = nf0.format(PLAN.invest); } M = model(); renderHero(); save(); setStep(2); } });
+  $('#dialRange').addEventListener('click',e=>{ const c = e.target.closest('[data-set]'); if(c){ setDial(+c.dataset.set); return; } if(e.target.closest('[data-go-income]')) setStep(1); });
+  $('#applyAdj').checked = state.applyAdj;
+  $('#useRec').addEventListener('click',()=>{ setDial(dialRange(INC.score).rec); });
+  $('#applyAdj').addEventListener('change',e=>{ state.applyAdj = e.target.checked; state.current = {}; M = model(); renderHero(); renderMini(); renderIncome(); save(); });
+  renderIncome();
+}
+
+/* ---------- wiring ---------- */
+const RENDER = {1:renderIncome,3:renderPortfolio,4:renderPicks,5:renderOutlook,6:renderTrack};
+function setStep(n){
+  state.step = n;
+  $$('.step').forEach((s,i)=>{ s.hidden = (i+1)!==n; });
+  $$('.nav button').forEach(b=>{ if(+b.dataset.go===n) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  $('#mini').hidden = (n<=2);
+  if(RENDER[n]) RENDER[n]();
+  window.scrollTo(0,0);
+  const h = $('#s'+n+' [tabindex="-1"]'); if(h) h.focus({preventScroll:true});
+}
+function setDial(v){
+  v = clamp(Math.round(v),0,100);
+  if(v!==state.dial) state.current = {};
+  state.dial = v; $('#dial').value = v; $('#dialMini').value = v;
+  M = model(); renderHero(); renderMini();
+  if(RENDER[state.step]) RENDER[state.step]();
+  save();
+}
+function bindField(id, key, lo, hi, errId, msg, isInt){
+  const el = $(id), err = $(errId);
+  el.addEventListener('input',()=>{
+    const raw = parseNum(el.value);
+    if(el.value.trim()==='' && key==='monthly'){ state[key]=0; err.textContent=''; }
+    else if(raw<lo || raw>hi){ err.textContent = msg; state[key] = clamp(raw,lo,hi); }
+    else { err.textContent=''; state[key] = isInt?Math.round(raw):raw; }
+    state.current = {};
+    M = model(); renderHero(); save();
+  });
+  el.addEventListener('blur',()=>{ if(!err.textContent){ el.value = key==='years'?String(Math.round(state[key])):(key==='monthly'&&state[key]===0?'':nf0.format(state[key])); } });
+}
+function init(){
+  buildTicks();
+  $('#amount').value = nf0.format(state.amount);
+  $('#years').value = String(state.years);
+  $('#monthly').value = state.monthly?nf0.format(state.monthly):'';
+  bindField('#amount','amount',100,1e9,'#eAmount','Enter an amount of at least $100.');
+  bindField('#years','years',1,40,'#eYears','Enter 1 to 40 years.',true);
+  bindField('#monthly','monthly',0,1e6,'#eMonthly','Enter 0 or more.');
+  $('#dial').addEventListener('input',e=>setDial(+e.target.value));
+  $('#dialMini').addEventListener('input',e=>setDial(+e.target.value));
+  $$('[data-go]').forEach(b=>b.addEventListener('click',()=>setStep(+b.dataset.go)));
+  $('#build').addEventListener('click',()=>setStep(3));
+  $('#editBtn').addEventListener('click',()=>setStep(2));
+  $('#p3body').addEventListener('click',e=>{ const b=e.target.closest('[data-mode]'); if(b){ state.mode=b.dataset.mode; save(); renderPicks(); } });
+  const g = $('#gauge');
+  const fromPtr = e => { const r=g.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width*320, y=(e.clientY-r.top)/r.height*214-24; const dx=x-CX, dy=CY-y; let a=Math.atan2(dy,dx)*180/Math.PI; if(a<0) a = dx<0?180:0; return (180-a)/1.8; };
+  let drag=false;
+  g.addEventListener('pointerdown',e=>{ drag=true; g.setPointerCapture(e.pointerId); setDial(fromPtr(e)); });
+  g.addEventListener('pointermove',e=>{ if(drag) setDial(fromPtr(e)); });
+  g.addEventListener('pointerup',()=>{ drag=false; });
+  g.addEventListener('pointercancel',()=>{ drag=false; });
+  $('#p5body').addEventListener('change',e=>{ if(e.target.id==='ckElig') ck.elig=+e.target.value; else if(e.target.id==='ckPro') ck.pro=+e.target.value; else return; updateTrack(); });
+  $('#p5body').addEventListener('input',e=>{ if(e.target.id==='ckSigned'){ ck.signed = parseNum(e.target.value); updateTrack(); } });
+  $('#p5body').addEventListener('focusout',e=>{ if(e.target.id==='ckSigned') e.target.value = nf0.format(ck.signed); });
+  $('#p5body').addEventListener('click',e=>{ if(e.target.id==='ckApply'){ state.elig = ck.elig; state.pro = ck.pro; $('#elig').value = String(ck.elig); $('#pro').value = String(ck.pro); const n = dialRange(ckScore()).rec; ck.elig=ck.pro=ck.signed=null; renderIncome(); setDial(n); renderTrack(); } });
+  initIncome();
+  $('#p2body').addEventListener('pointerover',e=>{ const d = e.target.closest('.bar [data-i]'); $$('#p2body .hold.hl').forEach(x=>x.classList.remove('hl')); if(d){ const h = $('#p2body .hold[data-i="'+d.dataset.i+'"]'); if(h) h.classList.add('hl'); } });
+  $('#p2body').addEventListener('pointerleave',()=>$$('#p2body .hold.hl').forEach(x=>x.classList.remove('hl')));
+  setDial(state.dial);
+  setStep(1);
+}
+init();
+/* Opening graphic: needle sweeps to the suggested dial, title fades in, then the app appears after 5 seconds. */
+(function intro(){
+  const el = $('#intro'); if(!el) return;
+  const target = dialRange(INC.score).rec, reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const needle = $('#inNeedle'), num = $('#inNum'), t0 = performance.now(), dur = reduce ? 0 : 2400, delay = reduce ? 0 : 300;
+  const ease = x => 1-Math.pow(1-x,3);
+  let done = false;
+  function frame(now){
+    if(done) return;
+    const x = dur ? Math.max(0, Math.min(1, (now-t0-delay)/dur)) : 1, v = Math.round(target*ease(x));
+    needle.setAttribute('transform','rotate('+(-90+180*v/100)+' 160 155)'); num.textContent = v; num.style.color = hsl(v);
+    if(x<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  function finish(){ if(done) return; done = true; el.classList.add('out'); setTimeout(()=>{ el.remove(); const h = $('#s'+state.step+' [tabindex="-1"]'); if(h) h.focus({preventScroll:true}); }, 600); }
+  const timer = setTimeout(finish, reduce ? 1200 : 4400);
+  $('#inSkip').addEventListener('click',()=>{ clearTimeout(timer); finish(); });
+  el.addEventListener('click',e=>{ if(e.target===el){ clearTimeout(timer); finish(); } });
+  document.addEventListener('keydown',function k(e){ if(e.key==='Escape'){ clearTimeout(timer); finish(); document.removeEventListener('keydown',k); } });
+})();
+})();
+</script>
+</body>
+</html>

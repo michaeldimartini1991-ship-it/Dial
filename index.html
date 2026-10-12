@@ -56,7 +56,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* header */
 .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0 18px;flex-wrap:wrap}
-.brand{font-family:var(--serif);font-size:24px;letter-spacing:-.01em}
+.brand{font-family:var(--serif);font-size:40px;line-height:1;letter-spacing:-.025em}
+@media (max-width:640px){.brand{font-size:34px}}
 .nav{display:flex;gap:2px;flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
 .nav::-webkit-scrollbar{display:none}
 .nav button{white-space:nowrap}
@@ -318,7 +319,7 @@ details.why .stress{padding:18px 0 4px}
 #intro .inGauge{width:100%;height:auto;display:block}
 #inArc{stroke-dasharray:371 371;stroke-dashoffset:371;animation:inSweep 2.4s .3s cubic-bezier(.3,.7,.2,1) forwards}
 .inNum{font-family:var(--serif);font-size:64px;line-height:1;margin-top:-14px;letter-spacing:-.03em;color:var(--ink)}
-.inTitle{font-family:var(--serif);font-size:44px;line-height:1.1;margin-top:28px;opacity:0;animation:inUp .8s 1.6s ease forwards}
+.inTitle{font-family:var(--serif);font-size:76px;line-height:1;letter-spacing:-.03em;margin-top:24px;opacity:0;animation:inUp .8s 1.6s ease forwards}
 .inTag{font-size:16px;color:var(--ink2);margin-top:8px;opacity:0;animation:inUp .8s 2.1s ease forwards}
 .inSkip{position:absolute;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));background:none;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:14px;color:var(--ink2)}
 .inSkip:hover{color:var(--ink);border-color:var(--ink)}
@@ -336,7 +337,7 @@ details.why .stress{padding:18px 0 4px}
 #welcome.go .wLine{animation:inUp .8s 1.1s ease forwards}
 #welcome.go .wAsk{animation:inUp .8s 2.3s ease forwards}
 #welcome.go .wGo{animation:inUp .8s 2.9s ease forwards}
-.wTitle{font-family:var(--serif);font-size:64px;line-height:1;letter-spacing:-.03em;color:var(--ink)}
+.wTitle{font-family:var(--serif);font-size:clamp(84px,24vw,112px);line-height:1;letter-spacing:-.03em;color:var(--ink)}
 .wLine{font-size:19px;color:var(--ink2);margin-top:22px}
 .wAsk{font-family:var(--serif);font-size:30px;line-height:1.2;letter-spacing:-.01em;color:var(--ink);margin-top:44px}
 .wGo{margin-top:26px;font-size:17px;padding:14px 30px}

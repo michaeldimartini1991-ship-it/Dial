@@ -1283,10 +1283,10 @@ function init(){
   setStep(1);
 }
 init();
-/* Opening graphic: needle sweeps to the suggested dial, title fades in, then the app appears after 5 seconds. */
+/* Opening graphic: needle sweeps to a random spot on the dial, title fades in, then the app appears after 5 seconds. */
 (function intro(){
   const el = $('#intro'); if(!el) return;
-  const target = dialRange(INC.score).rec, reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const target = 5 + Math.floor(Math.random()*91), reduce   /* a fresh random landing spot (5-95) every time the app opens */ = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const needle = $('#inNeedle'), num = $('#inNum'), t0 = performance.now(), dur = reduce ? 0 : 2400, delay = reduce ? 0 : 300;
   const ease = x => 1-Math.pow(1-x,3);
   let done = false;

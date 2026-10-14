@@ -6,25 +6,25 @@
 <title>Dial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Big+Shoulders+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* Athletic department: chalk-white page, midnight ink, turf green for actions. Sections are split by yard-line rules, not floating cards. */
-  --page:#F2F3EE; --glow1:#F2F3EE; --glow2:#F2F3EE; --paper:#FFFFFF; --soft:#E6E9E1; --soft2:#D8DCD2; --ink:#13202E; --ink2:#556170; --line:#CDD2C8;
-  --shadow:none; --turf:#1E5B3E; --turf-ink:#F2F3EE; --chalk:#F2F3EE;
+  /* Clubhouse: stone page, deep club green for actions, brass for the one detail that marks the current place. Data sits on white panels with hairline edges. */
+  --page:#F0F1EC; --glow1:#F0F1EC; --glow2:#F0F1EC; --paper:#FFFFFF; --soft:#EEF0EA; --soft2:#DDE0D8; --ink:#0F1D18; --ink2:#5A645F; --line:#DCDFD7;
+  --shadow:none; --turf:#1F4D3A; --turf-ink:#F4F2EA; --chalk:#F4F2EA; --brass:#A8865A;
   --accent:#0E0E0E; --accent-ink:#FFFFFF; --g1:#CFCFCF; --g2:#0E0E0E;
   --c-cash:#CFE6EE; --c-bonds:#8FC4D6; --c-tips:#5AA9BC; --c-usl:#F2C14E; --c-uss:#EE9B3B; --c-intl:#E0713A; --c-em:#C2413A; --c-reit:#8E3B5E;
   --f-cash:#0E0E0E; --f-bonds:#0E0E0E; --f-tips:#0E0E0E; --f-usl:#0E0E0E; --f-uss:#0E0E0E; --f-intl:#0E0E0E; --f-em:#FFFFFF; --f-reit:#FFFFFF;
   --hs:68%; --hl:40%; --hl-soft:88%; --dh:120;
   --dialc:hsl(var(--dh) var(--hs) var(--hl)); --hs-soft:68%; --dialsoft:hsl(var(--dh) var(--hs-soft) var(--hl-soft));
   --calm:#2A9D8F; --warm:#E9A23B; --hot:#D1453B; --tax:#7A8CA8; --cush:#5AA9BC; --signed:#E9A23B; --on-fill:#0E0E0E;
-  --serif:'Big Shoulders Display','Arial Narrow','DejaVu Sans Condensed',sans-serif-condensed,sans-serif;   /* display: stadium-signage condensed */
+  --serif:'Archivo','Helvetica Neue',Arial,sans-serif;   /* display: Archivo; extended and tracked for the wordmark, normal width for headlines */
   --sans:'Barlow','Helvetica Neue',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
   box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --page:#0F1813; --glow1:#0F1813; --glow2:#0F1813; --paper:#16221B; --soft:#1B2921; --soft2:#26362C; --ink:#E8ECE5; --ink2:#9AA69E; --line:#2B3B31; --shadow:none; --turf:#3F9A6C; --turf-ink:#0F1813;
+    --page:#0D1411; --glow1:#0D1411; --glow2:#0D1411; --paper:#141C18; --soft:#19231E; --soft2:#26322B; --ink:#ECEDE8; --ink2:#9CA59F; --line:#27322C; --shadow:none; --turf:#4C8F6E; --turf-ink:#0D1411; --brass:#C9A877;
     --accent:#F2F2F2; --accent-ink:#0A0A0A; --g1:#4A4A4A; --g2:#F2F2F2;
     --c-cash:#1F3A44; --c-bonds:#2C6E80; --c-tips:#3E93A8; --c-usl:#E3B23C; --c-uss:#E08A2E; --c-intl:#D2632E; --c-em:#C04A3E; --c-reit:#A8507A;
     --f-cash:#F2F2F2; --f-bonds:#F2F2F2; --f-tips:#0A0A0A; --f-usl:#0A0A0A; --f-uss:#0A0A0A; --f-intl:#0A0A0A; --f-em:#F2F2F2; --f-reit:#F2F2F2;
@@ -32,7 +32,7 @@
   }
 }
 :root[data-theme="dark"]{
-  --page:#0F1813; --glow1:#0F1813; --glow2:#0F1813; --paper:#16221B; --soft:#1B2921; --soft2:#26362C; --ink:#E8ECE5; --ink2:#9AA69E; --line:#2B3B31; --shadow:none; --turf:#3F9A6C; --turf-ink:#0F1813;
+  --page:#0D1411; --glow1:#0D1411; --glow2:#0D1411; --paper:#141C18; --soft:#19231E; --soft2:#26322B; --ink:#ECEDE8; --ink2:#9CA59F; --line:#27322C; --shadow:none; --turf:#4C8F6E; --turf-ink:#0D1411; --brass:#C9A877;
   --accent:#F2F2F2; --accent-ink:#0A0A0A; --g1:#4A4A4A; --g2:#F2F2F2;
   --c-cash:#1F3A44; --c-bonds:#2C6E80; --c-tips:#3E93A8; --c-usl:#E3B23C; --c-uss:#E08A2E; --c-intl:#D2632E; --c-em:#C04A3E; --c-reit:#A8507A;
   --f-cash:#F2F2F2; --f-bonds:#F2F2F2; --f-tips:#0A0A0A; --f-usl:#0A0A0A; --f-uss:#0A0A0A; --f-intl:#0A0A0A; --f-em:#F2F2F2; --f-reit:#F2F2F2;
@@ -343,15 +343,15 @@ details.why .stress{padding:18px 0 4px}
 .wGo{margin-top:26px;font-size:17px;padding:14px 30px}
 @media (prefers-reduced-motion: reduce){#welcome.go .wTitle,#welcome.go .wLine,#welcome.go .wAsk,#welcome.go .wGo{animation:none;opacity:1}#welcome{transition:none}}
 /* sections: flat on the page, each opened by a heavy yard-line rule */
-.group,.hero,.blk,#p4body .chartBox,#p4body .stats{background:transparent;border:0;border-top:4px solid var(--ink);border-radius:0;box-shadow:none;padding:22px 0 10px}
-.hero{padding-top:28px}
+.group,.hero,.blk,#p4body .chartBox,#p4body .stats{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:none;padding:24px 26px 26px}
+.hero{padding:30px 28px}
 .blk{margin-top:36px}
 #p4body .stats{margin-top:32px}
 .group .grouphead,.blk .bh{border-bottom-color:var(--line)}
 .grouphead h3{color:var(--ink)}
 .lede{color:var(--ink2)}
 .fine{border-top-color:transparent}
-@media (max-width:640px){.group,.hero,.blk,#p4body .chartBox,#p4body .stats{padding:18px 0 8px}}
+@media (max-width:640px){.group,.hero,.blk,#p4body .chartBox,#p4body .stats{padding:18px 16px 20px;border-radius:12px}}
 /* color + interaction */
 #gNum,#bandName,.mini .val{color:var(--dialc);fill:var(--dialc);transition:fill .25s,color .25s}
 #gKnob circle:first-child{stroke:var(--dialc);transition:stroke .25s}
@@ -360,7 +360,7 @@ input[type=range]::-webkit-slider-runnable-track{background:linear-gradient(90de
 input[type=range]::-moz-range-track{background:linear-gradient(90deg,var(--calm),var(--warm),var(--hot))}
 input[type=range]::-webkit-slider-thumb{border-color:var(--dialc)}
 input[type=range]::-moz-range-thumb{border-color:var(--dialc)}
-.nav button[aria-current="step"]{background:var(--turf);color:var(--turf-ink)}
+.nav button[aria-current="step"]{background:none;color:var(--ink)}
 .btn:not(.ghost){background:var(--turf);border-color:var(--turf);color:var(--turf-ink)}
 .panel{background:var(--soft)}
 .bar div,.flow div{transition:opacity .15s,transform .15s;cursor:default}
@@ -371,32 +371,38 @@ input[type=range]::-moz-range-thumb{border-color:var(--dialc)}
 .srow .meter div{transition:width .3s}
 .flag{color:var(--hot)}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important}}
-/* type: condensed display for names and numbers, Barlow for reading */
-h1,h2,.brand,.inTitle,.wTitle,.inNum,.gnum,.headline,.verdict,.ckDo,.wAsk{letter-spacing:0}
-h1,.brand,.inTitle,.wTitle{font-weight:800;text-transform:uppercase}
-h1{font-size:clamp(46px,8vw,84px);line-height:.92}
-h2,.gnum,.inNum{font-weight:800}
-.grouphead h3,.bh .nm,.headline,.verdict,.ckDo,.wAsk{font-weight:700}
-.fact b,.stat .v,.hold .amt .d,.pk .tk,.pk .rt .am,.srow .r,.rcard .n,.rchip .n,.ckBox .n,.rscale .rec,table.list td.t,.bh .bt .d{font-weight:700;letter-spacing:0}
+/* type: Archivo for names and numbers, Barlow for reading */
+h1,h2,.inNum,.gnum,.headline,.verdict,.ckDo,.wAsk{letter-spacing:-.02em}
+h1{font-size:clamp(32px,4.8vw,50px);line-height:1.06;font-weight:600}
+h2{font-weight:600}
+.gnum,.inNum{font-weight:600;font-stretch:112%}
+.grouphead h3,.bh .nm,.headline,.verdict,.ckDo,.wAsk{font-weight:600;letter-spacing:-.01em}
+.fact b,.stat .v,.hold .amt .d,.pk .tk,.pk .rt .am,.srow .r,.rcard .n,.rchip .n,.ckBox .n,.rscale .rec,table.list td.t,.bh .bt .d,.xcard .big{font-weight:600;letter-spacing:-.01em;font-stretch:108%}
 .rcard .k,.ckBox .k{text-transform:none;letter-spacing:0;font-size:13.5px}
 b{font-weight:600}
-.brand{font-size:44px}
-@media (max-width:640px){.brand{font-size:38px}}
-/* step nav as a scoreboard strip */
-.nav{background:var(--ink);border-radius:8px;padding:4px;gap:2px}
-.nav button{font-family:var(--serif);font-weight:700;font-size:17px;color:var(--page);opacity:.72;border-radius:5px;padding:6px 12px}
-.nav button:hover{opacity:1;color:var(--page)}
-.nav button[aria-current="step"]{opacity:1}
+/* the wordmark: extended, tracked capitals, like a marque */
+.brand,.inTitle,.wTitle{font-weight:600;text-transform:uppercase;font-stretch:125%;letter-spacing:.12em;margin-right:-.12em}
+.brand{font-size:22px}
+.inTitle{font-size:44px}
+.wTitle{font-size:clamp(40px,11vw,64px)}
+/* step nav: quiet text tabs, brass underline on the current step */
+.nav{background:none;border:0;padding:0;gap:4px}
+.nav button{font-family:var(--sans);font-weight:500;font-size:14.5px;color:var(--ink2);border-radius:0;padding:8px 10px;border-bottom:2px solid transparent}
+.nav button:hover{color:var(--ink)}
+.nav button[aria-current="step"]{color:var(--ink);border-bottom-color:var(--brass)}
 .top{border-bottom:0}
-/* opening screens: the field */
-#intro,#welcome{background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 2px),rgba(242,243,238,.13) calc(10% - 2px) 10%),var(--turf);
-  --ink:#F2F3EE; --ink2:rgba(242,243,238,.78); --soft2:rgba(242,243,238,.2); --line:rgba(242,243,238,.4); color:#F2F3EE}
-#inNum{color:#F2F3EE!important}
-#welcome .btn.wGo{background:#F2F3EE;border-color:#F2F3EE;color:#1E5B3E;font-weight:600}
-.inSkip{color:#F2F3EE;border-color:rgba(242,243,238,.5)}
-.inSkip:hover{color:#F2F3EE;border-color:#F2F3EE}
+.btn{border-radius:8px;font-weight:500;letter-spacing:.01em}
+/* opening screens: one deep club-green room, the marque, a brass rule */
+#intro,#welcome{background:var(--turf);
+  --ink:#F4F2EA; --ink2:rgba(244,242,234,.72); --soft2:rgba(244,242,234,.16); --line:rgba(244,242,234,.35); color:#F4F2EA}
+#intro .inTitle::after,#welcome .wTitle::after{content:'';display:block;width:44px;height:1px;background:var(--brass);margin:22px auto 0}
+.wLine{margin-top:18px}
+#inNum{color:#F4F2EA!important;font-weight:500}
+#welcome .btn.wGo{background:#F4F2EA;border-color:#F4F2EA;color:var(--turf)}
+.inSkip{color:#F4F2EA;border-color:rgba(244,242,234,.4)}
+.inSkip:hover{color:#F4F2EA;border-color:#F4F2EA}
 :focus-visible{outline-color:var(--turf)}
-#intro :focus-visible,#welcome :focus-visible{outline-color:#F2F3EE}
+#intro :focus-visible,#welcome :focus-visible{outline-color:#F4F2EA}
 </style>
 </head>
 <body>
@@ -472,7 +478,7 @@ b{font-weight:600}
     </div>
 
     <div class="group">
-      <div class="grouphead"><h3>Income risk and your dial</h3></div>
+      <div class="grouphead"><h3>Your risk dial</h3></div>
       <div id="riskOut"></div>
       <div id="rangeOut"></div>
     </div>
@@ -482,7 +488,7 @@ b{font-weight:600}
       <div id="flowOut"></div>
     </div>
 
-    <details class="as"><summary>How the score works</summary><div id="howOut"></div></details>
+    <details class="as"><summary>How Dial sets your range</summary><div id="howOut"></div></details>
     <div class="actions"><button class="btn" id="toDial">Invest it</button></div>
   </section>
 
@@ -1154,7 +1160,7 @@ function renderTrack(){
 function updateTrack(){
   const out = $('#ckResult'); if(!out) return;
   const was = dialRange(INC.score), sc = ckScore(), now = dialRange(sc), d = state.dial;
-  const box = (k,score,rg,cls) => '<div class="ckBox'+(cls?' '+cls:'')+'"><div class="k">'+k+'</div><div class="n" style="color:'+hsl(rg.rec)+'">'+rg.lo+'–'+rg.hi+'</div><div class="d">Suggested '+rg.rec+' · income risk '+score+'</div></div>';
+  const box = (k,score,rg,cls) => '<div class="ckBox'+(cls?' '+cls:'')+'"><div class="k">'+k+'</div><div class="n" style="color:'+hsl(rg.rec)+'">'+rg.lo+'–'+rg.hi+'</div><div class="d">Suggested '+rg.rec+'</div></div>';
   let msg, target;
   if(d>now.hi){ msg = 'Lower your dial from '+d+' to '+now.rec+'.'; target = now.rec; }
   else if(d<now.lo){ msg = 'You can raise your dial to '+now.rec+' if you like.'; target = now.rec; }
@@ -1222,23 +1228,31 @@ function renderIncome(){
   const miniGauge = '<svg viewBox="0 0 120 68" aria-hidden="true"><path d="M '+g0[0]+' '+g0[1]+' A 48 48 0 0 1 '+g1[0]+' '+g1[1]+'" fill="none" stroke="var(--soft2)" stroke-width="8" stroke-linecap="round"/>'+
     '<path d="M '+gl[0]+' '+gl[1]+' A 48 48 0 0 1 '+gh[0]+' '+gh[1]+'" fill="none" stroke="'+hsl(rg.rec)+'" stroke-width="8"/>'+
     '<line x1="60" y1="60" x2="'+gr[0]+'" y2="'+gr[1]+'" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/><circle cx="60" cy="60" r="4" fill="var(--ink)"/></svg>';
-  let html = '<div class="xlate">'+
-    '<div class="xcard inc"><div class="lab">Income risk</div><div class="sub">How uncertain your NIL money is</div>'+
-      '<div class="big" style="color:'+hsl(I.score)+'">'+I.score+'<small>out of 100</small></div>'+
-      '<span class="tag" style="color:'+hsl(I.score)+'">'+band+'</span>'+
-      '<div class="imeter"><div style="width:'+I.score+'%;background:'+hsl(I.score)+'"></div></div><div class="iends"><span>Steady</span><span>Very uncertain</span></div></div>'+
-    '<div class="xarrow"><svg viewBox="0 0 46 20" aria-hidden="true"><path d="M2 10 H40 M32 3 L41 10 L32 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>translates<br>to</span></div>'+
-    '<div class="xcard dial"><div class="lab">Recommended risk dial</div><div class="sub">How much investment risk to take</div>'+
+  /* The income score stays internal: athletes see only the dial it points to, plus a plain-words reason. */
+  const hasPay = I.nPast+I.nAhead>0;
+  const reasons = [
+    [f.runway*w.runway, ey===0 ? 'this is your final season' : 'you have '+(ey>=4?'4 or more years':ey+' year'+(ey===1?'':'s'))+' of eligibility left'],
+    [f.pro*w.pro, f.pro>=.65 ? 'a pro career is not the plan or a long shot' : 'you have a real shot at going pro'],
+    [f.chunk*w.chunk, I.R12>0 ? 'one deal made up '+pct(f.chunk,0)+' of your NIL money in the last year' : 'you have not been paid yet this year'],
+    [f.signed*w.signed, I.S12>0 ? (f.signed>.5 ? 'only '+usd(I.S12)+' is signed for next year' : usd(I.S12)+' is already signed for next year') : 'nothing is signed for next year yet']
+  ].sort((x,y)=>y[0]-x[0]);
+  const lean = band==='Steady' ? 'on the higher side' : band==='Uneven' ? 'in the middle' : 'on the calm side';
+  const level = x => x<.34 ? 'Steady' : x<.67 ? 'Some risk' : 'Risky';
+  let html = '';
+  if(!hasPay){
+    html = '<p class="muted" style="max-width:62ch">Add your payments above, and your recommended dial shows up here.</p>';
+  } else {
+    html = '<div class="xcard dial" style="max-width:520px"><div class="lab">Your recommended dial</div><div class="sub">How much investment risk your income can support</div>'+
       '<div class="row"><div class="big" style="color:'+hsl(rg.rec)+'">'+rg.rec+'</div>'+miniGauge+'</div>'+
       '<span class="tag" style="color:'+hsl(rg.rec)+'">'+bandFor(rg.rec).name+'</span>'+
-      '<div class="rng">Range <b>'+rg.lo+'–'+rg.hi+'</b> on the risk dial</div></div>'+
-    '</div>';
-  html += '<p class="muted" style="max-width:66ch;margin-top:18px">'+(I.score<34?'Your income looks fairly dependable, so you can take on more investment risk.':I.score<67?'Your income is real but uneven, so take a bit less investment risk than you otherwise would.':'Your income could shrink or stop with little warning, so keep investments on the calm side.')+' The higher your income risk, the lower your dial should go.</p>';
-  html += '<details class="why"'+(WHY_OPEN?' open':'')+'><summary>How we got income risk '+I.score+'</summary><div class="stress" style="margin-top:8px">'+rows.map(r=>
-    '<div class="srow"><div class="top2"><span><b>'+r[0]+'</b><br><span class="muted small">'+r[1]+'</span></span><span class="r">+'+Math.round(r[2]*r[3])+' <span class="small muted" style="font-family:var(--sans)">of '+r[3]+'</span></span></div><div class="meter"><div style="width:'+(r[2]*100).toFixed(1)+'%;background:'+hsl(r[2]*100)+'"></div></div></div>').join('')+
-    '<p class="small muted">Points add up to the score: '+rows.map(r=>Math.round(r[2]*r[3])).join(' + ')+' = '+I.score+'.</p></div></details>';
+      '<div class="rng">Range <b>'+rg.lo+'–'+rg.hi+'</b> on the risk dial</div></div>';
+    html += '<p class="muted" style="max-width:66ch;margin-top:18px">Because '+reasons[0][1]+' and '+reasons[1][1]+', we kept your range '+lean+'.</p>';
+    html += '<details class="why"'+(WHY_OPEN?' open':'')+'><summary>Why this range?</summary><div class="stress" style="margin-top:8px">'+rows.map(r=>
+      '<div class="srow"><div class="top2"><span><b>'+r[0]+'</b><br><span class="muted small">'+r[1]+'</span></span><span class="small" style="font-weight:600;color:'+hsl(r[2]*100)+'">'+level(r[2])+'</span></div><div class="meter"><div style="width:'+(r[2]*100).toFixed(1)+'%;background:'+hsl(r[2]*100)+'"></div></div></div>').join('')+
+      '<p class="small muted">The riskier these look, the lower your recommended dial.</p></div></details>';
+  }
   $('#riskOut').innerHTML = html;
-  $('#riskOut details.why').addEventListener('toggle',e=>{ WHY_OPEN = e.target.open; });
+  const wd = $('#riskOut details.why'); if(wd) wd.addEventListener('toggle',e=>{ WHY_OPEN = e.target.open; });
   const mix = d => { const p = toPercents(interpWeights(d)), g = p.reduce((a,x,i)=>a+(ASSETS[i].group==='growth'?x:0),0); return g+'% stocks and real estate'; };
   const card = (k,d,cls) => { const b = bandFor(d); return '<div class="rcard'+(cls?' '+cls:'')+'"><div class="k">'+k+'</div><div class="n" style="color:'+hsl(d)+'">'+d+'</div><div class="bn">'+b.name+'</div><p>'+mix(d)+'. '+b.text+'</p></div>'; };
   let rh = '<p class="lab-sm" style="margin-top:40px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Your range on the risk dial</p>';
@@ -1262,9 +1276,9 @@ function renderIncome(){
   $('#flowOut').innerHTML = fl;
   $('#toDial').textContent = invest>=100 ? 'Invest '+usd(invest)+' →' : 'Go to the dial →';
 
-  $('#howOut').innerHTML = '<p class="small muted" style="margin-top:16px;max-width:70ch">NIL money comes in chunks rather than steady pay, so the score looks at the chunks themselves and at how long the earning window may last. Each factor runs from 0 (steady) to 1 (risky) and is weighted; the weights add up to 100.</p>'+
-    '<div class="formula">eligibility  = 1 − years left / 4          weight '+w.runway+'\npro          = 1 − chance of pro career        weight '+w.pro+'\nbiggest chunk = largest payment / last 12 months received   weight '+w.chunk+'\nsigned ahead = 1 − (signed next 12 months / received last 12 months), capped 0–1   weight '+w.signed+'\n\nscore    = sum of factor × weight\ncushion  = '+CUSHION_MIN+' + '+(CUSHION_MAX-CUSHION_MIN)+' × score/100 months of costs\nrange top    = 100 − '+RANGE_TOP_CUT+' × score\nrange bottom = top − '+RANGE_WIDTH+'   (suggested = middle)\nused dial    = your dial, capped at the range top\ntaxes    = rate × received since Jan 1 − already paid</div>'+
-    '<p class="small muted" style="margin-top:12px;max-width:70ch">Why cap the dial: your future earnings are part of your wealth. When they are uncertain, a calmer portfolio keeps a bad market year from landing at the same time as a dry spell in deals. This is the human-capital idea used in financial planning. The weights and limits are judgment calls, not estimates from data.</p>';
+  $('#howOut').innerHTML = '<p class="small muted" style="margin-top:16px;max-width:70ch">NIL money comes in chunks rather than steady pay, so Dial looks at the chunks themselves and at how long the earning window may last. Behind the scenes it rates income from steady to uncertain. Each factor below runs from 0 (steady) to 1 (risky) and is weighted; the weights add up to 100.</p>'+
+    '<div class="formula">eligibility  = 1 − years left / 4          weight '+w.runway+'\npro          = 1 − chance of pro career        weight '+w.pro+'\nbiggest chunk = largest payment / last 12 months received   weight '+w.chunk+'\nsigned ahead = 1 − (signed next 12 months / received last 12 months), capped 0–1   weight '+w.signed+'\n\nincome rating = sum of factor × weight (0 steady, 100 uncertain)\ncushion  = '+CUSHION_MIN+' + '+(CUSHION_MAX-CUSHION_MIN)+' × rating/100 months of costs\nrange top    = 100 − '+RANGE_TOP_CUT+' × rating\nrange bottom = top − '+RANGE_WIDTH+'   (suggested = middle)\ntaxes    = federal rate × received since Jan 1 + state tax on it − already paid</div>'+
+    '<p class="small muted" style="margin-top:12px;max-width:70ch">Why tie the dial to income: your future earnings are part of your wealth. When they are uncertain, a calmer portfolio keeps a bad market year from landing at the same time as a dry spell in deals. This is the human-capital idea used in financial planning. The weights and limits are judgment calls, not estimates from data.</p>';
 }
 function bindIncomeField(id,key,lo,hi,asPct){
   const el = $(id);

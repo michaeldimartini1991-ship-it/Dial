@@ -318,7 +318,6 @@ details.why .stress{padding:18px 0 4px}
 #intro .inIn{text-align:center;width:min(360px,100%)}
 #intro .inGauge{width:100%;height:auto;display:block}
 #inArc{stroke-dasharray:371 371;stroke-dashoffset:371;animation:inSweep 2.4s .3s cubic-bezier(.3,.7,.2,1) forwards}
-.inNum{font-family:var(--serif);font-size:64px;line-height:1;margin-top:-14px;letter-spacing:-.03em;color:var(--ink)}
 .inTitle{font-family:var(--serif);font-size:76px;line-height:1;letter-spacing:-.03em;margin-top:24px;opacity:0;animation:inUp .8s 1.6s ease forwards}
 .inTag{font-size:16px;color:var(--ink2);margin-top:8px;opacity:0;animation:inUp .8s 2.1s ease forwards}
 .inSkip{position:absolute;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));background:none;border:1px solid var(--line);border-radius:6px;padding:8px 16px;font-size:14px;color:var(--ink2)}
@@ -414,7 +413,6 @@ b{font-weight:600}
       <path id="inArc" d="M 42 155 A 118 118 0 0 1 278 155" fill="none" stroke="url(#ig)" stroke-width="10" stroke-linecap="round"/>
       <g id="inNeedle" transform="rotate(-90 160 155)"><line x1="160" y1="155" x2="160" y2="72" stroke="var(--ink)" stroke-width="3.5" stroke-linecap="round"/><circle cx="160" cy="155" r="7" fill="var(--ink)"/></g>
     </svg>
-    <div class="inNum" id="inNum">0</div>
     <div class="inTitle">Dial</div>
     <div class="inTag">Investing built around your NIL income</div>
   </div>
@@ -424,7 +422,7 @@ b{font-weight:600}
   <div class="wIn">
     <div class="wTitle">Dial</div>
     <div class="wLine" id="wLine">You are dialed in on the field.</div>
-    <div class="wAsk" id="wAsk">Are you ready to dial in your money?</div>
+    <div class="wAsk" id="wAsk">Are you ready to dial in on your money?</div>
     <button class="btn wGo" id="wGo">Dial me in</button>
   </div>
 </div>
@@ -1399,17 +1397,24 @@ function init(){
   setStep(1);
 }
 init();
-/* Opening graphic: needle sweeps to a random spot on the dial, title fades in, then the app appears after 5 seconds. */
+/* Opening graphic: the needle swings back and forth a few times, each swing smaller, and settles in the middle.
+   No number is shown; the title fades in, then the app appears after 5 seconds. */
 (function intro(){
   const el = $('#intro'); if(!el) return;
-  const target = 5 + Math.floor(Math.random()*91), reduce   /* a fresh random landing spot (5-95) every time the app opens */ = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const needle = $('#inNeedle'), num = $('#inNum'), t0 = performance.now(), dur = reduce ? 0 : 2400, delay = reduce ? 0 : 300;
-  const ease = x => 1-Math.pow(1-x,3);
+  const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SWINGS = [0, 88, 16, 74, 34, 56, 50];   /* dial positions the needle passes through, ending at 50 */
+  const needle = $('#inNeedle'), t0 = performance.now(), dur = reduce ? 0 : 2600, delay = reduce ? 0 : 300;
+  const easeInOut = x => x<.5 ? 4*x*x*x : 1-Math.pow(-2*x+2,3)/2;
+  const at = x => {   /* needle position for progress 0-1, each swing eased so it slows at the turnarounds */
+    if(x>=1) return SWINGS[SWINGS.length-1];
+    const seg = x*(SWINGS.length-1), i = Math.floor(seg), a = SWINGS[i], b = SWINGS[i+1];
+    return a + (b-a)*easeInOut(seg-i);
+  };
   let done = false;
   function frame(now){
     if(done) return;
-    const x = dur ? Math.max(0, Math.min(1, (now-t0-delay)/dur)) : 1, v = Math.round(target*ease(x));
-    needle.setAttribute('transform','rotate('+(-90+180*v/100)+' 160 155)'); num.textContent = v; num.style.color = hsl(v);
+    const x = dur ? Math.max(0, Math.min(1, (now-t0-delay)/dur)) : 1;
+    needle.setAttribute('transform','rotate('+(-90+180*at(x)/100)+' 160 155)');
     if(x<1) requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

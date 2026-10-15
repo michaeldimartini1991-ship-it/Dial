@@ -1180,8 +1180,21 @@ function payStatus(p){
   if(a<=0) return '<span class="bad">Add an amount</span>';
   return t<=TODAY ? '<span class="rec">Received</span>' : '<span class="sig">Signed</span>';
 }
+/* Payments stay in date order: oldest first, rows without a date at the bottom, ties keep entry order. */
+function byPayDate(a,b){ const x = a.date||'￿', y = b.date||'￿'; return x<y ? -1 : x>y ? 1 : a.id-b.id; }
+/* Re-sort after a date edit by moving the existing rows, so typing, focus and the cursor are never lost. */
+function sortPayRows(){
+  const before = state.payments.map(p=>p.id).join();
+  state.payments.sort(byPayDate);
+  if(state.payments.map(p=>p.id).join()===before) return;
+  const tb = $('#payRows'), active = document.activeElement;
+  state.payments.forEach(p=>{ const tr = tb.querySelector('tr[data-id="'+p.id+'"]'); if(tr) tb.appendChild(tr); });
+  if(active && active!==document.activeElement && tb.contains(active)) active.focus();
+  save();
+}
 function renderPayRows(){
-  const rows = state.payments.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  state.payments.sort(byPayDate);
+  const rows = state.payments;
   $('#payRows').innerHTML = rows.length ? rows.map(p=>
     '<tr data-id="'+p.id+'"><td><input type="date" id="pd-'+p.id+'" data-k="date" value="'+(p.date||'')+'" aria-label="Payment date"></td>'+
     '<td><input type="text" id="pa-'+p.id+'" data-k="amount" inputmode="decimal" value="'+(p.amount?nf0.format(p.amount):'')+'" placeholder="$0" aria-label="Payment amount"></td>'+
@@ -1305,7 +1318,12 @@ function initIncome(){
     const k = e.target.dataset.k; p[k] = k==='amount' ? parseNum(e.target.value) : e.target.value;
     state.current = {}; renderIncome(); renderHero(); save();
   });
-  tb.addEventListener('focusout',e=>{ if(e.target.dataset.k==='amount'){ const v = parseNum(e.target.value); e.target.value = v?nf0.format(v):''; } });
+  tb.addEventListener('focusout',e=>{
+    if(e.target.dataset.k==='amount'){ const v = parseNum(e.target.value); e.target.value = v?nf0.format(v):''; }
+    if(e.target.dataset.k==='date') setTimeout(sortPayRows,0);   /* reorder once the date is finished, not mid-typing */
+  });
+  /* Phone date pickers can leave the field focused after a pick, so also reorder on change when nobody is typing in it. */
+  tb.addEventListener('change',e=>{ if(e.target.dataset.k==='date' && document.activeElement!==e.target) sortPayRows(); });
   tb.addEventListener('click',e=>{ const b = e.target.closest('[data-del]'); if(!b) return; state.payments = state.payments.filter(x=>x.id!==+b.dataset.del); if(!state.payments.length) state.payments = [blankPay()]; renderPayRows(); renderIncome(); renderHero(); save(); });
   $('#addPay').addEventListener('click',()=>{ const p = {id:++rowSeq,date:isoOff(0),amount:0,src:''}; state.payments.push(p); renderPayRows(); renderIncome(); save(); const el = $('#pa-'+p.id); if(el) el.focus(); });
   $('#clearPay').addEventListener('click',()=>{ state.payments = [blankPay()]; renderPayRows(); renderIncome(); renderHero(); save(); });

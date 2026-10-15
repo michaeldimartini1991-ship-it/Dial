@@ -37,7 +37,7 @@ The weights and limits are judgment calls, not estimates from data. They're kept
 |---|---|
 | **Income** | Enter NIL payments (past = received, future = signed). See income risk, the recommended dial, and how cash splits between taxes, a cushion and investing. |
 | **Dial** | Choose a risk level, with the recommended range shown on the gauge. |
-| **Portfolio** | The resulting mix across eight asset classes, in dollars. |
+| **Portfolio** | The resulting mix across seven asset classes, in dollars. |
 | **Picks** | Example low-cost index funds for each slice. |
 | **Outlook** | A Monte Carlo simulation (1,000 paths) of possible outcomes, plus stress tests for 2008-style and 2022-style years. |
 | **Check-in** | A yearly update: what changed in the athlete's career, and whether the dial should move. |

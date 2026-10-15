@@ -13,8 +13,8 @@
   --page:#F0F1EC; --glow1:#F0F1EC; --glow2:#F0F1EC; --paper:#FFFFFF; --soft:#EEF0EA; --soft2:#DDE0D8; --ink:#0F1D18; --ink2:#5A645F; --line:#DCDFD7;
   --shadow:none; --turf:#1F4D3A; --turf-ink:#F4F2EA; --chalk:#F4F2EA; --brass:#A8865A;
   --accent:#0E0E0E; --accent-ink:#FFFFFF; --g1:#CFCFCF; --g2:#0E0E0E;
-  --c-cash:#CFE6EE; --c-bonds:#8FC4D6; --c-tips:#5AA9BC; --c-usl:#F2C14E; --c-uss:#EE9B3B; --c-intl:#E0713A; --c-em:#C2413A; --c-reit:#8E3B5E;
-  --f-cash:#0E0E0E; --f-bonds:#0E0E0E; --f-tips:#0E0E0E; --f-usl:#0E0E0E; --f-uss:#0E0E0E; --f-intl:#0E0E0E; --f-em:#FFFFFF; --f-reit:#FFFFFF;
+  --c-cash:#CFE6EE; --c-bonds:#8FC4D6; --c-tips:#5AA9BC; --c-usl:#F2C14E; --c-uss:#EE9B3B; --c-intl:#E0713A; --c-em:#C2413A;
+  --f-cash:#0E0E0E; --f-bonds:#0E0E0E; --f-tips:#0E0E0E; --f-usl:#0E0E0E; --f-uss:#0E0E0E; --f-intl:#0E0E0E; --f-em:#FFFFFF;
   --hs:68%; --hl:40%; --hl-soft:88%; --dh:120;
   --dialc:hsl(var(--dh) var(--hs) var(--hl)); --hs-soft:68%; --dialsoft:hsl(var(--dh) var(--hs-soft) var(--hl-soft));
   --calm:#2A9D8F; --warm:#E9A23B; --hot:#D1453B; --tax:#7A8CA8; --cush:#5AA9BC; --signed:#E9A23B; --on-fill:#0E0E0E;
@@ -26,16 +26,16 @@
   :root:not([data-theme="light"]){
     --page:#0D1411; --glow1:#0D1411; --glow2:#0D1411; --paper:#141C18; --soft:#19231E; --soft2:#26322B; --ink:#ECEDE8; --ink2:#9CA59F; --line:#27322C; --shadow:none; --turf:#4C8F6E; --turf-ink:#0D1411; --brass:#C9A877;
     --accent:#F2F2F2; --accent-ink:#0A0A0A; --g1:#4A4A4A; --g2:#F2F2F2;
-    --c-cash:#1F3A44; --c-bonds:#2C6E80; --c-tips:#3E93A8; --c-usl:#E3B23C; --c-uss:#E08A2E; --c-intl:#D2632E; --c-em:#C04A3E; --c-reit:#A8507A;
-    --f-cash:#F2F2F2; --f-bonds:#F2F2F2; --f-tips:#0A0A0A; --f-usl:#0A0A0A; --f-uss:#0A0A0A; --f-intl:#0A0A0A; --f-em:#F2F2F2; --f-reit:#F2F2F2;
+    --c-cash:#1F3A44; --c-bonds:#2C6E80; --c-tips:#3E93A8; --c-usl:#E3B23C; --c-uss:#E08A2E; --c-intl:#D2632E; --c-em:#C04A3E;
+    --f-cash:#F2F2F2; --f-bonds:#F2F2F2; --f-tips:#0A0A0A; --f-usl:#0A0A0A; --f-uss:#0A0A0A; --f-intl:#0A0A0A; --f-em:#F2F2F2;
     --hl:60%; --hl-soft:20%; --hs-soft:28%; --calm:#3CC2B0; --warm:#F0B04A; --hot:#EE6A5E; --tax:#8FA3C2; --cush:#3E93A8; --signed:#F0B04A; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --page:#0D1411; --glow1:#0D1411; --glow2:#0D1411; --paper:#141C18; --soft:#19231E; --soft2:#26322B; --ink:#ECEDE8; --ink2:#9CA59F; --line:#27322C; --shadow:none; --turf:#4C8F6E; --turf-ink:#0D1411; --brass:#C9A877;
   --accent:#F2F2F2; --accent-ink:#0A0A0A; --g1:#4A4A4A; --g2:#F2F2F2;
-  --c-cash:#1F3A44; --c-bonds:#2C6E80; --c-tips:#3E93A8; --c-usl:#E3B23C; --c-uss:#E08A2E; --c-intl:#D2632E; --c-em:#C04A3E; --c-reit:#A8507A;
-  --f-cash:#F2F2F2; --f-bonds:#F2F2F2; --f-tips:#0A0A0A; --f-usl:#0A0A0A; --f-uss:#0A0A0A; --f-intl:#0A0A0A; --f-em:#F2F2F2; --f-reit:#F2F2F2;
+  --c-cash:#1F3A44; --c-bonds:#2C6E80; --c-tips:#3E93A8; --c-usl:#E3B23C; --c-uss:#E08A2E; --c-intl:#D2632E; --c-em:#C04A3E;
+  --f-cash:#F2F2F2; --f-bonds:#F2F2F2; --f-tips:#0A0A0A; --f-usl:#0A0A0A; --f-uss:#0A0A0A; --f-intl:#0A0A0A; --f-em:#F2F2F2;
   --hl:60%; --hl-soft:20%; --hs-soft:28%; --calm:#3CC2B0; --warm:#F0B04A; --hot:#EE6A5E; --tax:#8FA3C2; --cush:#3E93A8; --signed:#F0B04A; color-scheme:dark;
 }
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);-webkit-text-size-adjust:100%}
@@ -608,35 +608,32 @@ const ASSETS = [
    funds:'Developed-markets index fund'},
   {id:'em', name:'Emerging markets', group:'growth', ret:.085, vol:.230, er:.0010, color:'--c-em',
    what:'Companies in fast-growing countries such as India, Brazil and Taiwan. The wildest ride on the list.',
-   funds:'Emerging-markets index fund'},
-  {id:'reit', name:'Real estate (REITs)', group:'growth', ret:.070, vol:.190, er:.0012, color:'--c-reit',
-   what:'Funds that own apartments, warehouses and offices and pass along the rent.',
-   funds:'REIT index fund'}
+   funds:'Emerging-markets index fund'}
 ];
 const CORR = [
-  [1,.20,.20,0,0,0,0,0],
-  [.20,1,.80,.10,.05,.10,.10,.30],
-  [.20,.80,1,.20,.15,.20,.20,.35],
-  [0,.10,.20,1,.88,.85,.72,.75],
-  [0,.05,.15,.88,1,.78,.70,.78],
-  [0,.10,.20,.85,.78,1,.85,.70],
-  [0,.10,.20,.72,.70,.85,1,.62],
-  [0,.30,.35,.75,.78,.70,.62,1]
+  [1,.20,.20,0,0,0,0],
+  [.20,1,.80,.10,.05,.10,.10],
+  [.20,.80,1,.20,.15,.20,.20],
+  [0,.10,.20,1,.88,.85,.72],
+  [0,.05,.15,.88,1,.78,.70],
+  [0,.10,.20,.85,.78,1,.85],
+  [0,.10,.20,.72,.70,.85,1]
 ];
-/* Anchor mixes at dial 0, 25, 50, 75, 100 (cash, bonds, TIPS, US, US small, intl, EM, REIT). Dial values in between are blended. */
+/* Anchor mixes at dial 0, 25, 50, 75, 100 (cash, bonds, TIPS, US, US small, intl, EM). Dial values in between are blended.
+   The real estate slice that used to be here was folded into US stocks, so each mix keeps the same stock share. */
 const ANCHORS = [
-  [70,20,10, 0, 0, 0, 0,0],
-  [15,35,15,20, 0,12, 0,3],
-  [ 5,25,10,30, 5,17, 3,5],
-  [ 0,10, 5,35,12,20,12,6],
-  [ 0, 0, 0,30,25,15,25,5]
+  [70,20,10, 0, 0, 0, 0],
+  [15,35,15,23, 0,12, 0],
+  [ 5,25,10,35, 5,17, 3],
+  [ 0,10, 5,41,12,20,12],
+  [ 0, 0, 0,35,25,15,25]
 ].map(r=>r.map(x=>x/100));
 const INFLATION = 0.025;
 const MIN_POSITION = 0.02;   /* holdings under 2% are dropped and the rest scaled up */
 const STRESS = [
-  {id:'gfc', name:'2008-style crash', note:'Approximate 2008 calendar-year returns for each asset type.', r:[.015,.05,-.02,-.37,-.34,-.43,-.53,-.37]},
-  {id:'rates', name:'2022-style rate shock', note:'Stocks and bonds fell together as interest rates jumped.', r:[.015,-.13,-.118,-.18,-.204,-.145,-.20,-.245]},
-  {id:'crash', name:'Hypothetical 30% stock crash', note:'Made-up scenario: every stock-like holding falls 30%, bonds edge up.', r:[0,.02,0,-.30,-.30,-.30,-.30,-.30]}
+  {id:'gfc', name:'2008-style crash', note:'Approximate 2008 calendar-year returns for each asset type.', r:[.015,.05,-.02,-.37,-.34,-.43,-.53]},
+  {id:'rates', name:'2022-style rate shock', note:'Stocks and bonds fell together as interest rates jumped.', r:[.015,-.13,-.118,-.18,-.204,-.145,-.20]},
+  {id:'crash', name:'Hypothetical 30% stock crash', note:'Made-up scenario: every stock holding falls 30%, bonds edge up.', r:[0,.02,0,-.30,-.30,-.30,-.30]}
 ];
 
 function interpWeights(d){
@@ -674,7 +671,7 @@ function bandFor(d){
   if(d<=32) return {name:'Cautious', text:'Mostly bonds and cash with a modest slice of stocks. Smaller swings, slower growth.'};
   if(d<=57) return {name:'Balanced', text:'A mix of stocks for growth and bonds for cushioning. Some rough years, a decent shot at growth.'};
   if(d<=80) return {name:'Growth', text:'Mostly stocks from around the world. Expect real drops in bad years in exchange for higher long-run growth.'};
-  return {name:'Maximum growth', text:'All stocks and real estate, tilted toward smaller and emerging-market companies. The biggest swings, best suited to money you will not touch for a long time.'};
+  return {name:'Maximum growth', text:'All stocks, tilted toward smaller and emerging-market companies. The biggest swings, best suited to money you will not touch for a long time.'};
 }
 /* Seeded random draws so results are repeatable */
 function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
@@ -854,18 +851,6 @@ const PICKS = {
     fit: same('Fast-growing economies. High potential and big swings, which is why it is a small slice at lower dials.'),
     core: same(F('VWO','Vanguard FTSE Emerging Markets ETF',.0006,'Companies in China, India, Taiwan, Brazil and other emerging economies.')),
     alts: same([F('IEMG','iShares Core MSCI Emerging Markets ETF',.0009,'Same job as VWO from a different provider.'),F('SCHE','Schwab Emerging Markets Equity ETF',.0011,'Another broad emerging-markets fund.')])
-  },
-  reit: {
-    fit: {low:'Property companies that collect rent. The optional stock picks lean toward steady landlords.',
-          mid:'Property companies that collect rent and pass it along as dividends.',
-          high:'Property companies that collect rent. The optional stock picks lean toward data and infrastructure.'},
-    core: same(F('VNQ','Vanguard Real Estate ETF',.0013,'About 160 US real estate companies across towers, warehouses, housing and more.')),
-    alts: same([F('SCHH','Schwab US REIT ETF',.0007,'A lower-fee REIT fund with a similar mix.'),F('USRT','iShares Core US REIT ETF',.0008,'Another broad REIT fund.')]),
-    stocks: {
-      low:[F('O','Realty Income','','Owns thousands of single-tenant buildings and pays dividends monthly.'),F('PSA','Public Storage','','Self-storage facilities. Steady, rent-driven income.'),F('WELL','Welltower','','Senior housing and health care properties.')],
-      mid:[F('PLD','Prologis','','Warehouses and logistics centers for online shopping.'),F('AMT','American Tower','','Cell towers leased to wireless carriers.'),F('SPG','Simon Property Group','','Large shopping malls and outlet centers.')],
-      high:[F('EQIX','Equinix','','Data centers that host the internet and AI workloads.'),F('DLR','Digital Realty','','Data centers leased to cloud and tech companies.'),F('IRM','Iron Mountain','','Records storage that is expanding into data centers.')]
-    }
   }
 };
 const SLEEVE = {low:.10, mid:.15, high:.20};  /* share of a slice that may go into individual stocks */
@@ -965,7 +950,7 @@ function renderHero(){
   const rg = dialRange(INC.score);
   $('#adjLine').innerHTML = state.dial>rg.hi ? '<span class="flag">This is above the range your income supports (<b>'+rg.lo+'\u2013'+rg.hi+'</b>).</span> You can go higher. Just know that a bad year in the market could land at the same time as a dry spell in NIL money.' : '';
   $('#useRec').textContent = 'Set dial to '+rg.rec; $('#useRec').hidden = state.dial===rg.rec;
-  $('#fMix').innerHTML = '<b>'+g+'%</b> stocks and real estate, <b>'+(100-g)+'%</b> bonds and cash';
+  $('#fMix').innerHTML = '<b>'+g+'%</b> stocks, <b>'+(100-g)+'%</b> bonds and cash';
   $('#fAvg').innerHTML = '<b>'+spct(st.mu)+'</b> a year, about '+sUsd(amount*st.mu)+' on '+usd(amount);
   if(st.bad>=0) $('#fBad').innerHTML = 'Should still end near <b>'+spct(st.bad)+'</b>, or '+usd(amount*(1+st.bad));
   else $('#fBad').innerHTML = '<b>'+spct(st.bad)+'</b>, so '+usd(amount)+' could shrink to about '+usd(amount*(1+st.bad));
@@ -1023,7 +1008,7 @@ function renderPicks(){
   const stocksOn = state.mode==='stocks';
   let html = '<div class="seg" role="group" aria-label="Choose a route"><button data-mode="funds" aria-pressed="'+(!stocksOn)+'">Funds only</button><button data-mode="stocks" aria-pressed="'+stocksOn+'">Funds plus a few stocks</button></div>';
   html += '<p class="small muted" style="margin-top:12px;max-width:62ch">'+(stocksOn
-    ? 'Hands-on route: up to '+Math.round(SLEEVE[tier]*100)+'% of your US stock and real estate slices goes into three individual companies; the rest stays in the fund. Single stocks can fall much further than a fund, and even a great company can lose most of its value.'
+    ? 'Hands-on route: up to '+Math.round(SLEEVE[tier]*100)+'% of your US stock slice goes into three individual companies; the rest stays in the fund. Single stocks can fall much further than a fund, and even a great company can lose most of its value.'
     : 'The simple route: one low-cost fund per slice. The ten largest US companies already make up over a third of the S&P 500, so index funds give you big names without betting on any one.')+'</p>';
   const list = [];
   ASSETS.forEach((a,i)=>{
@@ -1264,7 +1249,7 @@ function renderIncome(){
   }
   $('#riskOut').innerHTML = html;
   const wd = $('#riskOut details.why'); if(wd) wd.addEventListener('toggle',e=>{ WHY_OPEN = e.target.open; });
-  const mix = d => { const p = toPercents(interpWeights(d)), g = p.reduce((a,x,i)=>a+(ASSETS[i].group==='growth'?x:0),0); return g+'% stocks and real estate'; };
+  const mix = d => { const p = toPercents(interpWeights(d)), g = p.reduce((a,x,i)=>a+(ASSETS[i].group==='growth'?x:0),0); return g+'% stocks'; };
   const card = (k,d,cls) => { const b = bandFor(d); return '<div class="rcard'+(cls?' '+cls:'')+'"><div class="k">'+k+'</div><div class="n" style="color:'+hsl(d)+'">'+d+'</div><div class="bn">'+b.name+'</div><p>'+mix(d)+'. '+b.text+'</p></div>'; };
   let rh = '<p class="lab-sm" style="margin-top:40px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Your range on the risk dial</p>';
   rh += rangeScale(rg);
